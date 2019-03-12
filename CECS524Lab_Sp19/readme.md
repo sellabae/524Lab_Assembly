@@ -72,8 +72,7 @@ hello.exe
 ```
 This run the execution file.  
 
-![commandline screenshot]
-(images/lab9_screenshot.png)  
+![commandline screenshot](/images/lab9_screenshot.png)  
 result
 
 8. Whatever change for the assembly code, edit hello.asm and repeat the step 7 as you normally would program.
