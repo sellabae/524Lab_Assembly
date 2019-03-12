@@ -1,0 +1,10 @@
+# DOSBox specific info
+ReadMe.rtf
+UTILS/
+DEBUG125/
+
+# TASM(TurboAssembler) should not be shared
+TASM/
+
+# MacOS specific
+.DS_Store
