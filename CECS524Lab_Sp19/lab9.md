@@ -6,11 +6,14 @@
 2. Running a simple assembly program.
 
 ## Lab Assignment
-- [ ] Install TurboGUI (from sourceforge).
+- [ ] Install TurboGUI (from sourceforge).  
+*TurboGUI has both assembler IDE and TASM that runs on Dos.*
 - [x] Download pcmac.inc (macro codes).
-- [x] Create an assembly file(hello.asm) with the given code.
-- [x] Put the source code file and pcmac.inc under the same directory.
-TurboGUI have both assembler IDE and TASM that runs on Dos.
+- [x] Create an assembly file from the given code. (hello.asm)
+- [x] Put the source code file and pcmac.inc under the same directory.  
+- [x] Assembly hello.asm (-> hello.obj)
+- [x] Build hello.obj (-> hello.exe)
+- [x] Run hello.exe
 
 ## Assembler with virtual DOS for Mac
 Since I use Mac, not Windows, I needed to install DOS first.  
@@ -39,6 +42,7 @@ UTILS\init.BAT
 The local directory ‘~/DOSBox/‘ is mounted as a virtual drive C and the DOS’s current drive is switched to drive C.
 
 3-2. To mount temporarily,  
+On the command line . 
 ```
 Mount c ~/DOSBox/
 C:
