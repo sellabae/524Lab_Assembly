@@ -1,6 +1,8 @@
-# CECS524 Advanced Programming Languages
+## CECS524 Lab - Assembly Language Program
+
 CSULB Spring 2019
-Lab works for assembly codes
+CECS524. Advanced Programming Languages
+labs for assembly code
 
 * .ASM assembly code source file
 * .OBJ object file
