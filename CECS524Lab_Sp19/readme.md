@@ -71,9 +71,7 @@ TLINK links object files(if there’s more than one obj files) and builds, so th
 hello.exe
 ```
 This run the execution file.  
-
-![commandline screenshot](/images/lab9_screenshot.png)  
-result
+![result](/images/lab9_screenshot.png)  
 
 8. Whatever change for the assembly code, edit hello.asm and repeat the step 7 as you normally would program.
 
