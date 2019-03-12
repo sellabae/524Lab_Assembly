@@ -1,6 +1,5 @@
-# AssemblyLab
-CSULB Spring2019
-CECS524 Advanced Programming Languages
+# CECS524 Advanced Programming Languages
+CSULB Spring 2019
 Lab works for assembly codes
 
 * .ASM assembly code source file
