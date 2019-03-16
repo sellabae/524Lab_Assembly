@@ -29,21 +29,21 @@ main  PROC
     mov ds, ax
 
     ;print programtitle
-    _putstr progtitle
+    sPutStr progtitle
     _putch  13, 10
 
     ;get hours
-    _putstr  prompHour
+    sPutStr  prompHour
     call  GetDec
     mov   hours, ax
 
     ;get rate
-    _putstr prompRate
+    sPutStr prompRate
     call  GetDec
     mov   rate, ax
 
     ;get insururence
-    _putstr prompInsur
+    sPutStr prompInsur
     call  GetDec
     mov   insur, ax
 
@@ -66,22 +66,22 @@ main  PROC
 
     ; more calculations..
 
-    _putstr GrossMessage
+    sPutStr GrossMessage
     mov   ax, gross
     call  PutDec
     _putch  13, 10
 
-    _putstr TaxMessage
+    sPutStr TaxMessage
     mov   ax, tax
     call  PutDec
     _putch  13, 10
 
-    _putstr InsurMessage
+    sPutStr InsurMessage
     mov   ax, insur
     call  PutDec
     _putch  13, 10
 
-    _putstr NetPayMessage
+    sPutStr NetPayMessage
     mov   ax, netpay
     call  PutDec
     _putch  13, 10
