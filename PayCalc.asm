@@ -5,10 +5,9 @@ include Pcmac.inc
 .stack  100h
 .data
 progtitle   db  'CECS 524 Pay Calculator.', 13, 10, '$' ; otherwise we need to do _PutStr 13,10 seperately
-prompHour   db  'Enter hours workered: ','$'
-prompRate   db  'Enter rate: ','$'
-prompInsur  db  'Enter insurance: ','$'
-
+promHour    db  'Enter hours workered: ','$'
+promRate    db  'Enter rate: ','$'
+promInsur   db  'Enter insurance: ','$'
 hours   dw  ?
 rate    dw  ?
 insur   dw  ?   ;insurence
@@ -17,33 +16,39 @@ tax     dw  ?
 taxrate dw  12
 hundred dw  100
 netpay  dw  ?
-
 GrossMessage  db  '[Gross pay] ','$'
 TaxMessage    db  '[Tax (12%)] ','$'
 InsurMessage  db  '[Insurance] ','$'
 NetPayMessage db  '[ Net pay ] ','$'
+
+promContinue  db  'Enter Y/N to continue: ','$'
+continue  db  ?
+yes   db  121   ; y:121, Y:89
+no    db  110   ; n:110, N:78
+
 
     .code
 main  PROC
     mov ax, @data
     mov ds, ax
 
+START:
     ;print programtitle
     sPutStr progtitle
     _putch  13, 10
 
     ;get hours
-    sPutStr  prompHour
+    sPutStr  promHour
     call  GetDec
     mov   hours, ax
 
     ;get rate
-    sPutStr prompRate
+    sPutStr promRate
     call  GetDec
     mov   rate, ax
 
     ;get insururence
-    sPutStr prompInsur
+    sPutStr promInsur
     call  GetDec
     mov   insur, ax
 
@@ -64,8 +69,7 @@ main  PROC
     sub   ax, insur
     mov   netpay, ax
 
-    ; more calculations..
-
+    ;print results
     sPutStr GrossMessage
     mov   ax, gross
     call  PutDec
@@ -85,6 +89,14 @@ main  PROC
     mov   ax, netpay
     call  PutDec
     _putch  13, 10
+
+    ;check if user wants to calculate more
+    sPutStr promContinue
+    call GetDec
+    mov   continue, al
+    ;comparing and branching
+    cmp   al, yes
+    JE  START  ;if al equals yes, jump to repete(the start)
 
     _exit
   main  endp
