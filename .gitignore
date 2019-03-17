@@ -8,3 +8,7 @@ TASM/
 
 # MacOS specific
 .DS_Store
+
+# object files and map files
+*.obj
+*.map
