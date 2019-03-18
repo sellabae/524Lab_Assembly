@@ -1,105 +1,87 @@
-;CECS 524 Spring2019. Lab11 3/14/2019
+;CECS 524 Spring2019 - Lab11 3/14/2019
+;@author Sella Bae
 
 include Pcmac.inc
 .model  small
 .stack  100h
+
 .data
-progtitle   db  'CECS 524 Pay Calculator.', 13, 10, '$' ; otherwise we need to do _PutStr 13,10 seperately
-promHour    db  'Enter hours workered: ','$'
-promRate    db  'Enter rate: ','$'
-promInsur   db  'Enter insurance: ','$'
-hours   dw  ?
-rate    dw  ?
-insur   dw  ?   ;insurence
-gross   dw  ?   ;gross pay
-tax     dw  ?
-taxrate dw  12
-hundred dw  100
-netpay  dw  ?
+ProgTitle   db  '[CECS 524 Pay Calculator]', 13, 10, '$' ; otherwise we need to do _PutStr 13,10 sepeRately
+PromHour    db  'Enter Hours workered: ','$'
+PromRate    db  'Enter Rate: ','$'
+PromInsur   db  'Enter Insurance: ','$'
+Hours   dw  ?
+Rate    dw  ?
+Insur   dw  ?   ;Insurence
+Gross   dw  ?   ;Gross pay
+Tax     dw  ?
+TaxRate dw  12
+Hundred dw  100
+NetPay  dw  ?
 GrossMessage  db  '[Gross pay] ','$'
 TaxMessage    db  '[Tax (12%)] ','$'
 InsurMessage  db  '[Insurance] ','$'
 NetPayMessage db  '[ Net pay ] ','$'
 
-promContinue  db  'Enter Y/N to continue: ','$'
-continue  db  ?
-yes   db  121   ; y:121, Y:89
-no    db  110   ; n:110, N:78
+.code
+Main  PROC
+    MOV AX, @data
+    MOV ds, AX
 
-
-    .code
-main  PROC
-    mov ax, @data
-    mov ds, ax
-
-START:
-    ;print programtitle
-    sPutStr progtitle
+    sPutStr ProgTitle ;print programtitle
     _putch  13, 10
 
-    ;get hours
-    sPutStr  promHour
-    call  GetDec
-    mov   hours, ax
+    ;get inputs
+    sPutStr  PromHour ;get Hours
+    CALL  GetDec
+    MOV   Hours, AX
+    sPutStr PromRate  ;get Rate
+    CALL  GetDec
+    MOV   Rate, AX
+    sPutStr PromInsur ;get Insururence
+    CALL  GetDec
+    MOV   Insur, AX
 
-    ;get rate
-    sPutStr promRate
-    call  GetDec
-    mov   rate, ax
+    ;Gross = Hours * Rate
+    MOV   AX, Hours
+    MUL   Rate
+    MOV   Gross, AX
 
-    ;get insururence
-    sPutStr promInsur
-    call  GetDec
-    mov   insur, ax
+    ;Tax = Gross * TaxRate / 100
+    MOV   AX, Gross
+    MUL   TaxRate   ;NOTE size for multiplication. word x word = double (dx,ax)
+    DIV   Hundred   ;NOTE size for dividend/divisor -> double/word = word
+    MOV   Tax, AX
 
-    ;gross pay = hours * rate
-    mov   ax, hours
-    mul   rate
-    mov   gross, ax
-
-    ;tax = gross * taxrate / 100
-    mov   ax, gross
-    mul   taxrate   ;NOTE size for multiplication. word x word = double (dx,ax)
-    div   hundred   ;NOTE size for dividend/divisor -> double/word = word
-    mov   tax, ax
-
-    ;netpay = gross - tax - insur
-    mov   ax, gross
-    sub   ax, tax
-    sub   ax, insur
-    mov   netpay, ax
+    ;NetPay = Gross - Tax - Insur
+    MOV   AX, Gross
+    SUB   AX, Tax
+    SUB   AX, Insur
+    MOV   NetPay, AX
 
     ;print results
-    sPutStr GrossMessage
-    mov   ax, gross
-    call  PutDec
+    sPutStr GrossMessage  ;print result of gross
+    MOV   AX, Gross
+    CALL  PutDec
     _putch  13, 10
 
-    sPutStr TaxMessage
-    mov   ax, tax
-    call  PutDec
+    sPutStr TaxMessage    ;print result of tax
+    MOV   AX, Tax
+    CALL  PutDec
     _putch  13, 10
 
-    sPutStr InsurMessage
-    mov   ax, insur
-    call  PutDec
+    sPutStr InsurMessage  ;print insurance
+    MOV   AX, Insur
+    CALL  PutDec
     _putch  13, 10
 
-    sPutStr NetPayMessage
-    mov   ax, netpay
-    call  PutDec
+    sPutStr NetPayMessage ;print result of netpay
+    MOV   AX, NetPay
+    CALL  PutDec
     _putch  13, 10
 
-    ;check if user wants to calculate more
-    sPutStr promContinue
-    call GetDec
-    mov   continue, al
-    ;comparing and branching
-    cmp   al, yes
-    JE  START  ;if al equals yes, jump to repete(the start)
-
-    _exit
-  main  endp
+    _exit ;exit program
+  Main  ENDP
 
 ;[PutDec]---------------------------------------
  .DATA
@@ -193,4 +175,4 @@ M32768  db  '-32768$'
       ret
   GetDec  ENDP
 
-end main
+END Main

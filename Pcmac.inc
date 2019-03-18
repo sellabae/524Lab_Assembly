@@ -140,7 +140,7 @@ ENDIF
 
 sGetCh  MACRO   echo
         _GetCh  echo
-        ENDM    
+        ENDM
 
 _BIOSCh MACRO
         mov     ah, 0h
