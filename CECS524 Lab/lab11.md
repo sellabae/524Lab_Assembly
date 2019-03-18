@@ -2,7 +2,7 @@
 # Pay Calculator
 IBM PC Assembly language program that calculates wages
 
-Assignment: [Lab11]()  
+Assignment: [Lab11](assignments/Lab11_AssemblerMath.txt)  
 
 Assembly code: [PayCalc.asm](../PayCalc.asm)  
 
