@@ -16,3 +16,6 @@ all under [CECS524Lab](CECS524Lab/) directory
 
 1. [Lab9](CECS524Lab/readme.md). Creating an Assembly Language Program: [Hello.asm](HELLO.ASM)
 2. [Lab11](CECS524Lab/lab11.md). Payment Calculation Program: [PayCalc.asm](PayCalc.asm)
+3. [Lab12](). Celsius to Fahrenheit Program: [lab12.asm](lab12.asm)
+4. [Lab13](). Sum 1 to n Program: [lab13.asm](lab13.asm)
+5. [AssemblyProgram](). spring break assignment..: ...
