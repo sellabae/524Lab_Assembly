@@ -14,10 +14,7 @@ Screenshots
 Lab 11	CECS 524	Spring 2019		Assembler Math  
 DUE: end of lab
 
-###### Deliverables:  
-Assembler file to BB
-
-###### Objectives:  
+#### Objectives:  
 * use of include files
 * use of I/O macros
 * numeric I/O
@@ -26,7 +23,7 @@ Assembler file to BB
 
 Formatting and comments are to follow the example on the back of this page.
 
-###### Assignment Details:
+#### Assignment Details:
 This assignment consists of writing an IBM PC Assembly language program calculates wages. The wages are subject to 12% flat tax on any and all amounts of gross pay. Medical insurance payments may also be deducted if desired.
 
 Three integer inputs are required to be entered, and then the program should produce the gross pay (hours * rate), the tax (gross pay * 12%), and net pay (gross – tax –insurance). Round off errors may occur since the numerical values are integers and the program performs division
@@ -59,15 +56,15 @@ Insurance:25
 Net pay:239
 ```
 
-###### Formatting and Comments:
+#### Formatting and Comments:
 1. Every procedure (except main) shall have a comment header describing the purpose of the function, its interface (parameters whether passed in registers or on the stack, and its return value.
 2. Every instruction except RET shall have a comment starting at column 35. Pseudo-ops such as PROC, ENDP, .DATA, and so on do not require comments.
 3. Instruction and segment formats are as follows:
-  1. Program segments pseudo-ops are to start in column 10.
-  2. All instructions are also to start in column 10.
-  3. Procedure pseudo-ops start in column 1.
-  4. Operands start in column 20.
-  5. Comments on instructions begin in column 35. If an instruction’s length exceeds 35, then its comment starts one space immediately after the end of the instruction.
+   1. Program segments pseudo-ops are to start in column 10.
+   2. All instructions are also to start in column 10.
+   3. Procedure pseudo-ops start in column 1.
+   4. Operands start in column 20.
+   5. Comments on instructions begin in column 35. If an instruction’s length exceeds 35, then its comment starts one space immediately after the end of the instruction.
 4. All instructions and pseudo-ops are to be in all caps. Ex. ADD, PROC.
 5. All register references are to be in all caps. Ex. AX, DS, BP.
 6. All user defined identifiers are to have first letter capitalized and following letters in lower case. Use meaningful names. Names that convey a meaning of more than one word (Ex. RateOfPay) should capitalize each word.
