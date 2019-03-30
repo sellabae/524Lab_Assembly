@@ -45,8 +45,9 @@ Main ENDP
 ;[RecAdd]---------------------------------------
 .DATA
 PromRecAdd  db  'RecAdd:','$'
+PromSubSum  db  ' Sum:','$'
 n   dw ?
-retSum  dw  ?
+retSum  dw  0   ;declare and initialize retSum
 
 .CODE
 RecAdd  PROC
@@ -58,12 +59,6 @@ RecAdd  PROC
     MOV   AX, word ptr [bp+4] ;4bytes up from bp is cel
     MOV   n, AX
 
-    ;print msg 'RecAdd is called! parameter: n'
-    sPutStr PromRecAdd
-    Call PutDec
-    MOV   AX, n
-    _putch 13,10
-
     ;calculate the sum
     ;;; if(n==1)
     ;;;      return 1;
@@ -74,17 +69,29 @@ RecAdd  PROC
     CMP   n, 1
     JNE   NumNotOne
     ;;; THEN return 1;
-    MOV   AX, 1
+    MOV   retSum, 1
     JMP    RecAddDone
   NumNotOne:
     ;;; ELSE { Sum = RecAdd(Num) }
-    MOV   AX, n
-    ; MOV   AX, n       ;pass the argument Num to RecAdd
-    ; PUSH  AX
-    ; CALL  RecAdd      ;call the subprogram RecAdd
-    ; MOV   retSum, AX  ;move the result from RecAdd to Sum
+    MOV   AX, n       ;pass the argument Num to RecAdd
+    SUB   AX, 1       ; n = n - 1
+    PUSH  AX
+    CALL  RecAdd      ;call the subprogram RecAdd
+    ADD   retSum, AX  ;move the result from RecAdd to Sum
 
   RecAddDone:
+
+    ;print msg 'RecAdd:n Sum:sum'
+    sPutStr PromRecAdd
+    MOV   AX, n   ;to print n
+    Call PutDec
+    sPutStr PromSubSum
+    MOV   AX, retSum  ;to print sub sum
+    Call PutDec
+    _putch 13,10d
+
+    ;return retSum
+    MOV   AX, retSum
     ;clearing up this subprogram on stack
     pop bp    ;restore the previous stack frame
     ret 2     ;2 because F2C only has 1 parameter(local var)
