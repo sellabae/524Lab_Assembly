@@ -71,15 +71,16 @@ Net pay:239
 
 A small sample follows. The numbers are for column reference only. Do not include them in your code.
 ```
-1234567890123456789012345678901234567890
-         1111111111222222222233333333334
+;        1         2         3         4         5
+;2345678901234567890123456789012345678901234567890
+;
 ;Purpose: Procedure CalcSum sums the values of AX, BX, and MyVar
 ;Parameters: AX = accumulated sum, BX = second input, MyVar = third input
 ;Returns: AX
 ;
-CalcSumSum  PROC
-         ADD       AX, BX         ;AX = AX + BX. BX contains second input
-         ADD       AX, MyVar      ;AX = AX + MyVar. MyVar contains third input
-         RET
-CalcSum     ENDP
+CalcSumSum PROC
+           ADD       AX, BX         ;AX = AX + BX. BX contains second input
+           ADD       AX, MyVar      ;AX = AX + MyVar. MyVar contains third input
+           RET
+CalcSum    ENDP
 ```
