@@ -22,34 +22,35 @@ SumMsg      db  'Sum is $'
 
 .CODE
 Main    PROC
-        MOV AX, @data
-        MOV ds, AX
+        MOV     AX, @data
+        MOV     ds, AX
 
-        sPutStr ProgTitle   ;print program title
+        sPutStr ProgTitle     ;print program title
         ;get input number
-        sPutStr PromNumber  ;print "Enter a number: "
-        CALL  GetDec        ;get int n
+        sPutStr PromNumber    ;print "Enter a number: "
+        CALL    GetDec        ;get int n
         ;call RecAdd(n)
-        PUSH  AX            ;pass argument
-        CALL  RecAdd        ;call RecAdd(ax)
+        PUSH    AX            ;pass argument
+        CALL    RecAdd        ;call RecAdd(ax)
         ;print result
-        sPutStr SumMsg      ;print "Sum is "
-        CALL  PutDec        ;print the result of RecAdd stored in AX
+        sPutStr SumMsg        ;print "Sum is "
+        CALL    PutDec        ;print the result of RecAdd stored in AX
 
-        _exit   ;exit program
+        _exit                 ;exit program
 Main    ENDP
 
 ;[RecAdd]---------------------------------------
 ;RecAdd calculates sum of 1..n by recursive calls
 .CODE
 RecAdd  PROC
-;calculate the sum
+;------------------------------
 ; if(n==1)
 ;      return 1;
 ; else
 ;      return n + recadd(n-1);
-        push bp       ;save the current bp (stack frame)
-        mov  bp, sp   ;create new bp from sp(top)
+;------------------------------
+        push  bp       ;save the current bp (stack frame)
+        mov   bp, sp   ;create new bp from sp(top)
         ;get parameter stored in stack 4 bytes up from bp
         MOV   AX, word ptr [bp+4] ;get param
         ;IF
@@ -62,8 +63,8 @@ RecAdd  PROC
         CALL  RecAdd              ;RecAdd(n-1)
 DoneRecAdd:
         ADD   AX, word ptr [bp+4] ; ax = RecAdd(n-1) + n
-        pop bp    ;restore the previous stack frame
-        ret 2     ;2 because RecAdd() had only 1 parameter(local variable)
+        pop   bp      ;restore the previous stack frame
+        ret   2       ;2 because RecAdd() had only 1 parameter(local variable)
 RecAdd  ENDP
 
 
