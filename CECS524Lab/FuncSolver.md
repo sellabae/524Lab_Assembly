@@ -7,15 +7,15 @@ Assembly code: [FuncSolver.asm](../FuncSolver.asm)
 Screenshots  
 ...
 
+
 ## Assignment
 
-CECS 524  Function Solver
-
+**CECS 524  Function Solver**  
 Write an IBMPC assembly language program to do the following:
 - Solve the [Fibonacci](http://www.nist.gov/dads/HTML/fibonacciNumber.html) number series.
 - Solve [Ackerman](http://www.nist.gov/dads/HTML/ackermann.html)'s function.
 
-#### C++ sketch of the program:
+##### C++ sketch of the program:
 ```
 int	Ackerman(int x, int y);
 int	Fibonacci(int n);
@@ -32,7 +32,7 @@ int main() {
 }
 ```
 
-#### Restrictions:
+##### Restrictions:
 - There are NO global variables. No variables are defined in the data segment except strings necessary for the prompts.
 - THERE IS TO BE NO I/O within Ackerman and Fibonacci. All I/O is in a procedure called input.
 - All local storage, including parameters and local variables must be on the stack.
@@ -41,7 +41,7 @@ int main() {
 - The Ackerman function is recursive. Recursion must be used in the assembler program.
 - You may place the code for PutDec and GetDec directly in your program.
 
-#### Sample input:
+##### Sample input:
 ```
 1. Fibonaaci
 2. Ackerman
