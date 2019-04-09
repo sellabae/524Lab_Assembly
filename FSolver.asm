@@ -29,9 +29,14 @@ Main    ENDP
 
 ;Input--------------------------------------------------
 .DATA
-PromptMenu    db  0Dh,0Ah,'--------------------',0Dh,0Ah,' 1. Fibonacci',0Dh,0Ah,' 2. Ackerman',0Dh,0Ah,' 0. Quit',0Dh,0Ah,'--------------------',0Dh,0Ah,'$'
-PromptInput   db  'Enter menu: ','$'
+;PromptMenu
+;-----------------------------------------------------
+; MENU     1. Fibonacci    2. Ackerman    0. Quit
+;-----------------------------------------------------
+PromptMenu    db  0Dh,0Ah,'-----------------------------------------------------',0Dh,0Ah,' MENU     1. Fibonacci    2. Ackerman    0. Quit',0Dh,0Ah,'-----------------------------------------------------',0Dh,0Ah,'$'
+PromptInput   db  'Select menu: ','$'
 menu          dw  ?
+
 .CODE
 Input   PROC
         ;subprogram prep
@@ -72,12 +77,13 @@ Input   ENDP
 
 ;InputFib----------------------------------------------
 .DATA
-PromptFib     db  '[Fibonacci]',0Dh,0Ah,'$'
+PromptFib     db  'Fibonacci',0Dh,0Ah,'$'
 PromptN       db  'Enter n: ','$'
 inputN        dw  ?     ;int n for Fib(n)
 fibRst        dw  ?     ;result from Fib(n)
 MsgFibRst1    db  'Fib(','$'
 MsgFibRst2    db  ')=','$'
+
 .CODE
 InputFib  PROC
           push bp               ;save the current bp (stack frame)
@@ -108,7 +114,7 @@ InputFib  PROC
 InputFib  ENDP
 ;InputAck----------------------------------------------
 .DATA
-PromptAck     db  '[Ackerman]',0Dh,0Ah,'$'
+PromptAck     db  'Ackerman',0Dh,0Ah,'$'
 PromptX       db  'Enter x: ','$'
 PromptY       db  'Enter y: ','$'
 inputX        dw  ?     ;int x, y for Ack(x,y)
@@ -116,6 +122,7 @@ inputY        dw  ?
 ackRst        dw  ?     ;result from Ack(x,y)
 MsgAckRst1    db  'Ack(','$'
 MsgAckRst2    db  ')=','$'
+
 .CODE
 InputAck  PROC
           push bp               ;save the current bp (stack frame)
@@ -159,15 +166,16 @@ Fib     PROC
         push bp               ;save the current bp (stack frame)
         MOV  bp, sp           ;create new bp from sp(top)
         ;access parameter in stack
-        MOV     AX, word ptr [bp+4]  ;parameter is 4 bytes up from bp
-        ;MOV     n, AX         ;n = ax
+        ; MOV     AX, word ptr [bp+4]  ;parameter is 4 bytes up from bp
+        ; MOV     n, AX         ;n = ax
+        MOV     AX, word ptr [bp+4]   ;get n
 
         ;calculation
         ;...
         ;result in AX
         ;...
         ADD     AX, 1
-
+ReturnFib:
         pop     bp            ;restore the previous stack frame
         ret     2             ;2 because Fib() had 1 parameter(local var)
 Fib     ENDP
@@ -182,15 +190,15 @@ Ack     PROC
         ; MOV     x, AX         ;x = ax
         ; MOV     AX, word ptr [bp+4]  ;second param is 4 bytes up from bp
         ; MOV     y, AX         ;y = ax
-        MOV     AX, word ptr [bp+6]
-        MOV     BX, word ptr [bp+4]
+        MOV     AX, word ptr [bp+6]   ;get x
+        MOV     BX, word ptr [bp+4]   ;get y
 
         ;calculation
         ;...
         ;result in AX
         ;...
         ADD     AX, BX
-
+ReturnAck:
         pop     bp            ;restore the previous stack frame
         ret     4             ;4 because Ack() had 2 parameters(local var)
 Ack     ENDP
