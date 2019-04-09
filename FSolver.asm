@@ -29,43 +29,48 @@ Main    ENDP
 
 ;Input--------------------------------------------------
 .DATA
-PromptChoice  db  '1. Fibonacci',0Dh,0Ah,'2. Ackerman',0Dh,0Ah,'0. Quit',0Dh,0Ah,'$'
-PromptInput   db  'Enter choice: ','$'
+PromptMenu    db  0Dh,0Ah,'--------------------',0Dh,0Ah,' 1. Fibonacci',0Dh,0Ah,' 2. Ackerman',0Dh,0Ah,' 0. Quit',0Dh,0Ah,'--------------------',0Dh,0Ah,'$'
+PromptInput   db  'Enter menu: ','$'
 PromptFib     db  '[Fibonacci]',0Dh,0Ah,'$'
 PromptAck     db  '[Ackerman]',0Dh,0Ah,'$'
-choice        dw  ?
+menu          dw  ?
 .CODE
 Input   PROC
-        ;get input choice
-        sPutStr PromptChoice  ;print choice options
-        sPutStr PromptInput   ;print input choice
-        CALL    GetDec        ;get a integer and store in ax
-        MOV     choice, AX    ;choice = ax
+        ;subprogram prep
+        push    bp            ;save the current bp (stack frame)
+        MOV     bp, sp        ;create new bp from sp(top)
 
+AskInput:
+        ;get input menu
+        sPutStr PromptMenu    ;print menu options
+        sPutStr PromptInput   ;print input prompt
+        CALL    GetDec        ;get a integer (stored in ax)
+        MOV     menu, AX      ;menu = ax
         ;switch(choice)
-        ;MOV     AX, choice
-        CMP     choice, 0         ;case 0:
-        JE      EndInput
-        CMP     choice, 1         ;case 1:
-        JE      IfOne
-        CMP     choice, 2         ;case 2:
-        JE      IfTwo
-        JMP     EndInput
+        MOV     AX, menu
+        CMP     AX, 0         ;case 0:
+        JE      EndInput      ;break
+        MOV     AX, menu
+        CMP     AX, 1         ;case 1:
+        JE      Case1
+        MOV     AX, menu
+        CMP     AX, 2         ;case 2:
+        JE      Case2
+        JMP     AskInput      ;default: (none of 0,1,2)
 
-IfOne:  ;Fibonacci
+Case1:  ;Fibonacci
         sPutStr PromptFib
         ;..
-        JMP     EndInput      ;break
+        JMP     AskInput      ;break
 
-IfTwo:  ;Ackerman
+Case2:  ;Ackerman
         sPutStr PromptAck
         ;..
-        JMP     EndInput      ;break
+        JMP     AskInput      ;break
 
 EndInput:
-        ;clearing up this subprogram on stack
-        pop bp    ;restore the previous stack frame
-        ret 6     ;2 because F2C only has 1 parameter(local var)
+        pop     bp            ;restore the previous stack frame
+        ret                   ;return nothing (no parameter was passed)
 
 Input   ENDP
 
