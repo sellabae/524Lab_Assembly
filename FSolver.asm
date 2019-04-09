@@ -21,18 +21,16 @@ Main    PROC
         MOV     AX, @data
         MOV     ds, AX
 
-        sPutStr ProgTitle   ;print program title
+        sPutStr ProgTitle     ;print program title
         CALL    Input         ;call Input
 
-        _exit               ;exit program
+        _exit                 ;exit program
 Main    ENDP
 
 ;Input--------------------------------------------------
 .DATA
 PromptMenu    db  0Dh,0Ah,'--------------------',0Dh,0Ah,' 1. Fibonacci',0Dh,0Ah,' 2. Ackerman',0Dh,0Ah,' 0. Quit',0Dh,0Ah,'--------------------',0Dh,0Ah,'$'
 PromptInput   db  'Enter menu: ','$'
-PromptFib     db  '[Fibonacci]',0Dh,0Ah,'$'
-PromptAck     db  '[Ackerman]',0Dh,0Ah,'$'
 menu          dw  ?
 .CODE
 Input   PROC
@@ -44,7 +42,7 @@ AskInput:
         ;get input menu
         sPutStr PromptMenu    ;print menu options
         sPutStr PromptInput   ;print input prompt
-        CALL    GetDec        ;get a integer (stored in ax)
+        CALL    GetDec        ;get an integer (stored in ax)
         MOV     menu, AX      ;menu = ax
         ;switch(choice)
         MOV     AX, menu
@@ -59,31 +57,142 @@ AskInput:
         JMP     AskInput      ;default: (none of 0,1,2)
 
 Case1:  ;Fibonacci
-        sPutStr PromptFib
-        ;..
-        JMP     AskInput      ;break
+        CALL    InputFib      ;call InputFib
+        JMP     AskInput      ;go to AskInput
 
 Case2:  ;Ackerman
-        sPutStr PromptAck
-        ;..
-        JMP     AskInput      ;break
+        CALL    InputAck      ;call InputAck
+        JMP     AskInput      ;go to AskInput
 
 EndInput:
         pop     bp            ;restore the previous stack frame
-        ret                   ;return nothing (no parameter was passed)
+        ret                   ;return (no parameter was passed)
 
 Input   ENDP
+
+;InputFib----------------------------------------------
+.DATA
+PromptFib     db  '[Fibonacci]',0Dh,0Ah,'$'
+PromptN       db  'Enter n: ','$'
+inputN        dw  ?     ;int n for Fib(n)
+fibRst        dw  ?     ;result from Fib(n)
+MsgFibRst1    db  'Fib(','$'
+MsgFibRst2    db  ')=','$'
+.CODE
+InputFib  PROC
+          push bp               ;save the current bp (stack frame)
+          MOV  bp, sp           ;create new bp from sp(top)
+
+          sPutStr PromptFib     ;print "[Fibonacci]"
+          ;Get user input
+          sPutStr PromptN       ;print "Enter n: "
+          CALL    GetDec        ;get int x
+          MOV     inputN, AX
+          ;Call Fib(n)
+          MOV     AX, inputN
+          PUSH    AX            ;pass argument n
+          CALL    Fib           ;Fib(n)
+          MOV     fibRst, AX    ;return value from Fib(n)
+          ;Print result
+          sPutStr MsgFibRst1    ;print "Fib("
+          MOV     AX, inputN
+          CALL    PutDec        ;print n
+          sPutStr MsgFibRst2    ;print ")="
+          MOV     AX, fibRst
+          CALL    PutDec        ;print result
+          _putch  0Dh, 0Ah      ;print new line
+
+          ;Return
+          pop     bp            ;restore the previous stack frame
+          ret                   ;return (no parameter was passed)
+InputFib  ENDP
+;InputAck----------------------------------------------
+.DATA
+PromptAck     db  '[Ackerman]',0Dh,0Ah,'$'
+PromptX       db  'Enter x: ','$'
+PromptY       db  'Enter y: ','$'
+inputX        dw  ?     ;int x, y for Ack(x,y)
+inputY        dw  ?
+ackRst        dw  ?     ;result from Ack(x,y)
+MsgAckRst1    db  'Ack(','$'
+MsgAckRst2    db  ')=','$'
+.CODE
+InputAck  PROC
+          push bp               ;save the current bp (stack frame)
+          MOV  bp, sp           ;create new bp from sp(top)
+
+          sPutStr PromptAck     ;print "[Ackerman]"
+          ;Get user input
+          sPutStr PromptX       ;print "Enter x: "
+          CALL    GetDec        ;get int x
+          MOV     inputX, AX
+          sPutStr PromptY       ;print "Enter y: "
+          CALL    GetDec        ;get int y
+          MOV     inputY, AX
+          ;Call Ack(x,y)
+          MOV     AX, inputX
+          PUSH    AX            ;pass argument x
+          MOV     AX, inputY
+          PUSH    AX            ;pass argument y
+          CALL    Ack           ;Ack(x,y)
+          MOV     ackRst, AX    ;return value from Ack(x,y)
+          ;Print result
+          sPutStr MsgAckRst1  ;print "Ack("
+          MOV     AX, inputX
+          CALL    PutDec        ;print x
+          _putch  44            ;print ","
+          MOV     AX, inputY
+          CALL    PutDec        ;print y
+          sPutStr MsgAckRst2    ;print ")="
+          MOV     AX, ackRst
+          CALL    PutDec        ;print result
+          _putch  13, 10        ;print new line
+
+          ;Return
+          pop     bp            ;restore the previous stack frame
+          ret                   ;return (no parameter was passed)
+InputAck  ENDP
 
 ;Fibonacci---------------------------------------------
 .CODE
 Fib     PROC
+        push bp               ;save the current bp (stack frame)
+        MOV  bp, sp           ;create new bp from sp(top)
+        ;access parameter in stack
+        MOV     AX, word ptr [bp+4]  ;parameter is 4 bytes up from bp
+        ;MOV     n, AX         ;n = ax
+
+        ;calculation
         ;...
+        ;result in AX
+        ;...
+        ADD     AX, 1
+
+        pop     bp            ;restore the previous stack frame
+        ret     2             ;2 because Fib() had 1 parameter(local var)
 Fib     ENDP
 
 ;Ackerman----------------------------------------------
 .CODE
 Ack     PROC
+        push bp               ;save the current bp (stack frame)
+        MOV  bp, sp           ;create new bp from sp(top)
+        ;access parameters in stack
+        ; MOV     AX, word ptr [bp+6]  ;first param is 6 bytes up from bp
+        ; MOV     x, AX         ;x = ax
+        ; MOV     AX, word ptr [bp+4]  ;second param is 4 bytes up from bp
+        ; MOV     y, AX         ;y = ax
+        MOV     AX, word ptr [bp+6]
+        MOV     BX, word ptr [bp+4]
+
+        ;calculation
         ;...
+        ;result in AX
+        ;...
+        ADD     AX, BX
+
+        pop     bp            ;restore the previous stack frame
+        ret     4             ;4 because Ack() had 2 parameters(local var)
 Ack     ENDP
 
 
