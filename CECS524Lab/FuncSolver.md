@@ -17,8 +17,8 @@ Write an IBMPC assembly language program to do the following:
 
 #### C++ sketch of the program:
 ```
-int	Ackerman(int x, int y);
 int	Fibonacci(int n);
+int	Ackerman(int x, int y);
 void	input() {
 	int	x, y;
 
