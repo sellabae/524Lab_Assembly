@@ -2,7 +2,7 @@
 # Function Solver: Fibonacci and Ackerman
 
 Assignment: [FuncSolver](#Assignment)  
-Assembly code: [FuncSolver.asm](../FuncSolver.asm)  
+Assembly code: [FSolver.asm](../FSolver.asm)  
 
 Screenshots  
 ...
