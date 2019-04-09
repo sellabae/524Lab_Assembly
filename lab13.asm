@@ -17,10 +17,8 @@ include Pcmac.inc
 ;[Main]-----------------------------------------
 .DATA
 ProgTitle   db  '[Sum 1 to n Program]',0Dh,0Ah,'$'  ;string with new line
-PromNumber  db  'Enter a Number: ','$'
-inputNum    dw  ?
-resultSum   dw  ?
-SumMsg      db  'Sum is ','$'
+PromNumber  db  'Enter n: $'
+SumMsg      db  'Sum is $'
 
 .CODE
 Main    PROC
@@ -28,79 +26,46 @@ Main    PROC
         MOV ds, AX
 
         sPutStr ProgTitle   ;print program title
-
         ;get input number
-        sPutStr PromNumber
-        CALL  GetDec
-        MOV   inputNum, AX
-        ;TODO: check if inputNum is an integer number, if not ask again.
-
-        ;calculate sum of 1..n calling subprogram RecAdd
-        ;;Sum = RecAdd(Num)
-        MOV   AX, inputNum
-        PUSH  AX        ;pass argument to RecAdd
-        CALL  RecAdd    ;call the subprogram RecAdd
-        MOV   resultSum, AX   ;move the result from RecAdd to resultSum
-
+        sPutStr PromNumber  ;print "Enter a number: "
+        CALL  GetDec        ;get int n
+        ;call RecAdd(n)
+        PUSH  AX            ;pass argument
+        CALL  RecAdd        ;call RecAdd(ax)
         ;print result
-        sPutStr SumMsg
-        MOV   AX, resultSum
-        CALL  PutDec
+        sPutStr SumMsg      ;print "Sum is "
+        CALL  PutDec        ;print the result of RecAdd stored in AX
 
         _exit   ;exit program
 Main    ENDP
 
 ;[RecAdd]---------------------------------------
-.DATA
-PromRecAdd  db  'RecAdd:','$'
-PromSubSum  db  ' Sum:','$'
-n   dw ?
-retSum  dw  0   ;declare and initialize retSum
-
+;RecAdd calculates sum of 1..n by recursive calls
 .CODE
 RecAdd  PROC
+;calculate the sum
+; if(n==1)
+;      return 1;
+; else
+;      return n + recadd(n-1);
         push bp       ;save the current bp (stack frame)
-        MOV  bp, sp   ;create new bp from sp(top)
-
-        ;parameter to AX
-        MOV   AX, word ptr [bp+4] ;4bytes up from bp is cel
-        MOV   n, AX
-
-        ;calculate the sum
-        ;; if(n==1)
-        ;;      return 1;
-        ;;  else
-        ;;      return n + recadd(n-1);
-
-        CMP   n, 1          ; IF (n == 1)
-        JNE   NumNotOne     ; ELSE goto NumNotOne
-        MOV   retSum, 1     ; THEN retSum=1
-        JMP    RecAddDone   ;      and goto RecAddDone
-NumNotOne:                  ; ELSE { Sum = RecAdd(Num) }
-        MOV   AX, n         ;
-        SUB   AX, 1         ; ax = n-1
-        PUSH  AX            ;pass AX as a parameter of subprogram
-        CALL  RecAdd        ;call the subprogram RecAdd
-        ADD   AX, n         ; ax = RecAdd(n-1) + n
-        MOV   retSum, AX    ;move the result from RecAdd to Sum
-
-RecAddDone:
-        ;print msg 'RecAdd:n Sum:sum'
-        sPutStr PromRecAdd  ;print msg 'RecAdd:'
-        MOV   AX, n
-        Call PutDec         ;print n
-        sPutStr PromSubSum  ;print msg 'Sum:'
-        MOV   AX, retSum
-        Call PutDec         ;print sum
-        _putch 13,10       ;print newline
-
-        ;return retSum
-        MOV   AX, retSum
-        ;clearing up this subprogram on stack
+        mov  bp, sp   ;create new bp from sp(top)
+        ;get parameter stored in stack 4 bytes up from bp
+        MOV   AX, word ptr [bp+4] ;get param
+        ;IF
+        CMP   AX, 1               ;if (n <= 1)
+        ;THEN
+        JL    DoneRecAdd          ;go to done
+        ;ELSE
+        SUB   AX, 1               ;ELSE n-1
+        PUSH  AX                  ;pass param
+        CALL  RecAdd              ;RecAdd(n-1)
+DoneRecAdd:
+        ADD   AX, word ptr [bp+4] ; ax = RecAdd(n-1) + n
         pop bp    ;restore the previous stack frame
-        ret 2     ;2 because RecAdd() has only 1 parameter(local variable)
-
+        ret 2     ;2 because RecAdd() had only 1 parameter(local variable)
 RecAdd  ENDP
+
 
 
 ;[PutDec]---------------------------------------
