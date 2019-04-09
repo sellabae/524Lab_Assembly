@@ -18,31 +18,68 @@ include Pcmac.inc
 ProgTitle     db  '[CECS 524 Function Solver]',0Dh,0Ah,'$'  ;string with new newline
 .CODE
 Main    PROC
-        MOV   AX, @data
-        MOV   ds, AX
+        MOV     AX, @data
+        MOV     ds, AX
 
         sPutStr ProgTitle   ;print program title
-        CALL  Input         ;call Input
+        CALL    Input         ;call Input
 
         _exit               ;exit program
 Main    ENDP
 
 ;Input--------------------------------------------------
 .DATA
-PromptChoice  db  'Enter choice: ','$'
+PromptChoice  db  '1. Fibonacci',0Dh,0Ah,'2. Ackerman',0Dh,0Ah,'0. Quit',0Dh,0Ah,'$'
+PromptInput   db  'Enter choice: ','$'
+PromptFib     db  '[Fibonacci]',0Dh,0Ah,'$'
+PromptAck     db  '[Ackerman]',0Dh,0Ah,'$'
 choice        dw  ?
 .CODE
 Input   PROC
         ;get input choice
-        sPutStr PromptChoice
-        CALL  GetDec
-        MOV   choice, AX
+        sPutStr PromptChoice  ;print choice options
+        sPutStr PromptInput   ;print input choice
+        CALL    GetDec        ;get a integer and store in ax
+        MOV     choice, AX    ;choice = ax
+
+        ;switch(choice)
+        ;MOV     AX, choice
+        CMP     choice, 0         ;case 0:
+        JE      EndInput
+        CMP     choice, 1         ;case 1:
+        JE      IfOne
+        CMP     choice, 2         ;case 2:
+        JE      IfTwo
+        JMP     EndInput
+
+IfOne:  ;Fibonacci
+        sPutStr PromptFib
+        ;..
+        JMP     EndInput      ;break
+
+IfTwo:  ;Ackerman
+        sPutStr PromptAck
+        ;..
+        JMP     EndInput      ;break
+
+EndInput:
+        ;clearing up this subprogram on stack
+        pop bp    ;restore the previous stack frame
+        ret 6     ;2 because F2C only has 1 parameter(local var)
 
 Input   ENDP
 
-;Fibonacci
+;Fibonacci---------------------------------------------
+.CODE
+Fib     PROC
+        ;...
+Fib     ENDP
 
-;Ackerman
+;Ackerman----------------------------------------------
+.CODE
+Ack     PROC
+        ;...
+Ack     ENDP
 
 
 ;[PutDec]---------------------------------------
