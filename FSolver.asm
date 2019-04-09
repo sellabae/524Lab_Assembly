@@ -34,7 +34,7 @@ Main    ENDP
 ; MENU     1. Fibonacci    2. Ackerman    0. Quit
 ;-----------------------------------------------------
 PromptMenu    db  0Dh,0Ah,'-----------------------------------------------------',0Dh,0Ah,' MENU     1. Fibonacci    2. Ackerman    0. Quit',0Dh,0Ah,'-----------------------------------------------------',0Dh,0Ah,'$'
-PromptInput   db  'Select menu: ','$'
+PromptInput   db  'Select menu: $'
 menu          dw  ?
 
 .CODE
@@ -78,11 +78,11 @@ Input   ENDP
 ;InputFib----------------------------------------------
 .DATA
 PromptFib     db  'Fibonacci',0Dh,0Ah,'$'
-PromptN       db  'Enter n: ','$'
+PromptN       db  'Enter n: $'
 inputN        dw  ?     ;int n for Fib(n)
 fibRst        dw  ?     ;result from Fib(n)
-MsgFibRst1    db  'Fib(','$'
-MsgFibRst2    db  ')=','$'
+MsgFibRst1    db  'Fib($'
+MsgFibRst2    db  ')=$'
 
 .CODE
 InputFib  PROC
@@ -95,8 +95,7 @@ InputFib  PROC
           CALL    GetDec        ;get int x
           MOV     inputN, AX
           ;Call Fib(n)
-          MOV     AX, inputN
-          PUSH    AX            ;pass argument n
+          PUSH    inputN        ;pass argument n
           CALL    Fib           ;Fib(n)
           MOV     fibRst, AX    ;return value from Fib(n)
           ;Print result
@@ -115,13 +114,13 @@ InputFib  ENDP
 ;InputAck----------------------------------------------
 .DATA
 PromptAck     db  'Ackerman',0Dh,0Ah,'$'
-PromptX       db  'Enter x: ','$'
-PromptY       db  'Enter y: ','$'
+PromptX       db  'Enter x: $'
+PromptY       db  'Enter y: $'
 inputX        dw  ?     ;int x, y for Ack(x,y)
 inputY        dw  ?
 ackRst        dw  ?     ;result from Ack(x,y)
-MsgAckRst1    db  'Ack(','$'
-MsgAckRst2    db  ')=','$'
+MsgAckRst1    db  'Ack($'
+MsgAckRst2    db  ')=$'
 
 .CODE
 InputAck  PROC
@@ -137,10 +136,8 @@ InputAck  PROC
           CALL    GetDec        ;get int y
           MOV     inputY, AX
           ;Call Ack(x,y)
-          MOV     AX, inputX
-          PUSH    AX            ;pass argument x
-          MOV     AX, inputY
-          PUSH    AX            ;pass argument y
+          PUSH    inputX        ;pass argument x
+          PUSH    inputY        ;pass argument y
           CALL    Ack           ;Ack(x,y)
           MOV     ackRst, AX    ;return value from Ack(x,y)
           ;Print result
@@ -161,44 +158,77 @@ InputAck  PROC
 InputAck  ENDP
 
 ;Fibonacci---------------------------------------------
+;f(n) = f(n-1) + f(n-2), where f(1)=1, f(2)=1
 .CODE
 Fib     PROC
         push bp               ;save the current bp (stack frame)
         MOV  bp, sp           ;create new bp from sp(top)
         ;access parameter in stack
-        ; MOV     AX, word ptr [bp+4]  ;parameter is 4 bytes up from bp
-        ; MOV     n, AX         ;n = ax
         MOV     AX, word ptr [bp+4]   ;get n
 
-        ;calculation
-        ;...
-        ;result in AX
-        ;...
-        ADD     AX, 1
-ReturnFib:
+; -------------------------
+; if( n <= 1 )
+;   return n
+; else
+;   return Fib(n-1) + Fib(n-2)
+; -------------------------
+        CMP     AX, 1         ;if(n<=1)
+        JG      RecurFib      ;no, recursive case
+        JMP     DoneFib       ;yes, base case. Fib(n)=n, where n=1,0
+
+RecurFib:
+        PUSH    AX            ;store n in stack
+
+        SUB     AX, 1         ;n-1
+        PUSH    AX            ;argument n-1
+        CALL    Fib           ;call Fib(n-1)
+        MOV     CX, AX        ;Fib(n-1) result in cx
+        POP     AX            ;pop n
+        PUSH    CX            ;store Fib(n-1) in stack
+
+        SUB     AX, 2         ;n-2
+        PUSH    AX            ;argument n-2
+        CALL    Fib           ;call Fib(n-2)
+        MOV     CX, AX        ;Fib(n-2) result in cx
+        POP     AX            ;get Fib(n-1) back from stack to ax
+        ADD     AX, CX        ;Fib(n-1) + Fib(n-2)
+DoneFib:
         pop     bp            ;restore the previous stack frame
         ret     2             ;2 because Fib() had 1 parameter(local var)
 Fib     ENDP
 
 ;Ackerman----------------------------------------------
+;A(0,j) = j+1               for j>=0
+;A(i,0) = A(i-1, 1)         for i>0
+;A(i,j) = A(i-1, A(i,j-1))  for i,j>0
 .CODE
 Ack     PROC
         push bp               ;save the current bp (stack frame)
         MOV  bp, sp           ;create new bp from sp(top)
-        ;access parameters in stack
-        ; MOV     AX, word ptr [bp+6]  ;first param is 6 bytes up from bp
-        ; MOV     x, AX         ;x = ax
-        ; MOV     AX, word ptr [bp+4]  ;second param is 4 bytes up from bp
-        ; MOV     y, AX         ;y = ax
         MOV     AX, word ptr [bp+6]   ;get x
         MOV     BX, word ptr [bp+4]   ;get y
 
-        ;calculation
-        ;...
-        ;result in AX
-        ;...
-        ADD     AX, BX
-ReturnAck:
+; ---------------------------------(i=x,j=y)
+; if (i == 0) {
+;   if (j >= 0)
+;     return j+1
+; } else if (i > 0) {
+;   if (j == 0)
+;     return Ack(i-1, 1)
+;   else
+;     return Ack(i-1, A(i,j-1))
+; }
+; ---------------------------------
+        CMP     AX, 0         ;if(i==0)
+        JG      RecurAck      ;no, recursive case
+        CMP     BX, 0         ;yes, if(j<=0)
+        JL      DoneAck       ;     no, done return 0 (in ax)
+        ADD     BX, 1         ;     yes, j++
+        JMP     DoneAck
+
+RecurAck:
+
+DoneAck:
         pop     bp            ;restore the previous stack frame
         ret     4             ;4 because Ack() had 2 parameters(local var)
 Ack     ENDP
