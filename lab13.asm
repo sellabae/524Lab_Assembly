@@ -4,7 +4,7 @@
 ;
 ; This program reads one integer value from user,
 ; adds a sequence of integers from 1 to the input value,
-; and print the result to the display.
+; and prints the result to the display.
 ;
 ; Sella Bae
 ; 3/29/2019
