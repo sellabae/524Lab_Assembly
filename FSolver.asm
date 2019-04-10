@@ -19,8 +19,9 @@ include Pcmac.inc
 .STACK 100h
 
 .DATA
-ProgTitle     db  '[CECS 524 Function Solver by Sella Bae]',13,10,'$'  ;string with new newline
-newline       db  13,10,'$'
+ProgTitle  db  '[CECS 524 Function Solver by Sella Bae]',13,10,'$'  ;string with new newline
+newline    db  13,10,'$'
+MsgNegN    db  'Enter zero or positive.',13,10,'$'
 .CODE
 Main    PROC
         MOV     AX, @data
@@ -46,12 +47,12 @@ Input   PROC
         push    bp            ;save the current bp (stack frame)
         mov     bp, sp        ;create new bp from sp(top)
 AskInput:
-        ;get input menu
+;Get user input menu
         sPutStr PromptMenu    ;print menu options
         sPutStr PromptInput   ;print input prompt
         CALL    GetDec        ;get an integer (stored in ax)
-        MOV     BX, AX      ;menu = ax
-        ;switch(choice)
+        MOV     BX, AX        ;menu = ax
+;switch(menu)
         CMP     BX, 0         ;case 0:
         JE      Menu0
         CMP     BX, 1         ;case 1:
@@ -83,10 +84,16 @@ InputFib  PROC
           mov  bp, sp           ;create new bp from sp(top)
 ;Print selected function
           sPutStr PromptFib     ;print "Fibonacci"
-;Get user input
+;Get user input and store in stack as local variable
+EnterN:
           sPutStr PromptN       ;print "Enter n: "
           CALL    GetDec        ;get int n
           MOV     BX, AX        ;move n to bx
+          CMP     BX, 0         ;if (n < 0)
+          JG      ContInputFib  ;n>=0, continue InputFib
+          sPutStr MsgNegN       ;n<0,  print "Enter zero or positive."
+          JMP     EnterN        ;ask input again
+ContInputFib:
           PUSH    BX            ;store n in stack
 ;Call Fib(n)
           PUSH    BX            ;argument n
@@ -94,7 +101,7 @@ InputFib  PROC
           MOV     CX, AX        ;move result to cx
 ;Print result
           sPutStr MsgFib1       ;print "Fib("
-          POP     AX            ;get n back from stack
+          POP     AX            ;get local n back from stack
           CALL    PutDec        ;print n
           sPutStr MsgFib2       ;print ")="
           MOV     AX, CX        ;move result to ax
@@ -121,13 +128,24 @@ InputAck  PROC
 ;Print selected function
           sPutStr PromptAck     ;print "Ackerman"
 ;Get user input and store in stack as local variables
+EnterX:
           sPutStr PromptX       ;print "Enter x: "
           CALL    GetDec        ;get input x
           MOV     BX, AX        ;move x to bx
-          PUSH    BX            ;store x in stack
+          CMP     BX, 0         ;if(x<0)
+          JGE     EnterY        ;x>=0, continue to ask another input
+          sPutStr MsgNegN       ;x<0,  print "Enter zero or positive."
+          JL      EnterX        ;ask input x again
+EnterY:
           sPutStr PromptY       ;print "Enter y: "
           CALL    GetDec        ;get input y
           MOV     CX, AX        ;move y to cx
+          CMP     CX, 0         ;if(y<0)
+          JGE     ContInputAck  ;y>=0, continue InputAck
+          sPutStr MsgNegN       ;y<0,  print "Enter zero or positive."
+          JL      EnterY        ;ask input y again
+ContInputAck:
+          PUSH    BX            ;store x in stack
           PUSH    CX            ;store y in stack
 ;Call Fib(n)
           PUSH    BX            ;argument x
@@ -164,13 +182,16 @@ Fib     PROC
 ;    else   return Fib(n-1) + Fib(n-2)    //recursive
 ; }
 ; ------------------------------------------------------------
-        push    bp               ;save the current bp (stack frame)
-        mov     bp, sp           ;create new bp from sp(top)
+        push    bp            ;save the current bp (stack frame)
+        mov     bp, sp        ;create new bp from sp(top)
         MOV     BX, word ptr [bp+4]   ;get n in stack into bx
+        MOV     AX, 0         ;initialize ax = 0
 ;Branching
+        CMP     BX, 0         ;if(n < 0)
+        JL      DoneFib       ;n<0,   return 0(in ax)
         CMP     BX, 1         ;if (n <= 1)
-        JG      RecurFib      ;no, recursive
-        MOV     AX, BX        ;yes, return n, where n=1,0
+        JG      RecurFib      ;n>1,   recursive
+        MOV     AX, BX        ;n=1,0, return n
         JMP     DoneFib       ;
 
 RecurFib:
@@ -233,7 +254,7 @@ BaseAck:
 ;Basecase work,   when i=0 in bx, j>0 in cx    then j++
         ADD     CX, 1         ;j+1
         MOV     AX, CX        ;move j+1 to ax
-        JMP     DoneAck
+        JMP     DoneAck       ;
 
 RecurAck1:
 ;Recursive work,  when i>0 in bx, j=0 in cx    then Ack(i-1,1)
@@ -242,7 +263,7 @@ RecurAck1:
         MOV     CX, 1         ;1
         PUSH    CX            ;argument 1
         CALL    Ack           ;call Ack(i-1,1)
-        JMP     DoneAck
+        JMP     DoneAck       ;
 
 RecurAck2:
 ;Recursive work,  when i>0 in bx, j>0 in cx    then Ack(i-1, Ack(i,j-1))
@@ -258,7 +279,7 @@ RecurAck2:
         PUSH    BX            ;argument i-1
         PUSH    AX            ;argument Ack(i,j-1)
         CALL    Ack           ;call Ack(i-1, Ack(i,j-1))
-        JMP     DoneAck
+        JMP     DoneAck       ;
 
 DoneAck:
 ;Return back to caller
