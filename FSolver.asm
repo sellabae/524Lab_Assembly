@@ -15,7 +15,8 @@ include Pcmac.inc
 .STACK 100h
 
 .DATA
-ProgTitle     db  '[CECS 524 Function Solver]',13,10,'$'  ;string with new newline
+ProgTitle     db  '[CECS 524 Function Solver by Sella Bae]',13,10,'$'  ;string with new newline
+newline       db  13,10,'$'
 .CODE
 Main    PROC
         MOV     AX, @data
@@ -29,89 +30,76 @@ Main    ENDP
 
 ;Input--------------------------------------------------
 .DATA
-;PromptMenu
 ;-----------------------------------------------------
 ; MENU     1. Fibonacci    2. Ackerman    0. Quit
 ;-----------------------------------------------------
 PromptMenu    db  13,10,'-----------------------------------------------------',13,10,' MENU     1. Fibonacci    2. Ackerman    0. Quit',13,10,'-----------------------------------------------------',13,10,'$'
 PromptInput   db  'Select menu: $'
-menu          dw  ?
-newline       db  13,10
-
+; menu          dw  ?
 .CODE
 Input   PROC
         ;subprogram prep
         push    bp            ;save the current bp (stack frame)
         MOV     bp, sp        ;create new bp from sp(top)
-
 AskInput:
         ;get input menu
         sPutStr PromptMenu    ;print menu options
         sPutStr PromptInput   ;print input prompt
         CALL    GetDec        ;get an integer (stored in ax)
-        MOV     menu, AX      ;menu = ax
+        MOV     BX, AX      ;menu = ax
         ;switch(choice)
-        MOV     AX, menu
-        CMP     AX, 0         ;case 0:
+        CMP     BX, 0         ;case 0:
         JE      EndInput      ;break
-        MOV     AX, menu
-        CMP     AX, 1         ;case 1:
+        CMP     BX, 1         ;case 1:
         JE      Case1
-        MOV     AX, menu
-        CMP     AX, 2         ;case 2:
+        CMP     BX, 2         ;case 2:
         JE      Case2
         JMP     AskInput      ;default: (none of 0,1,2)
-
 Case1:  ;Fibonacci
         CALL    InputFib      ;call InputFib
         JMP     AskInput      ;go to AskInput
-
 Case2:  ;Ackerman
         CALL    InputAck      ;call InputAck
         JMP     AskInput      ;go to AskInput
-
 EndInput:
         pop     bp            ;restore the previous stack frame
         ret                   ;return (no parameter was passed)
-
 Input   ENDP
 
 ;InputFib----------------------------------------------
 .DATA
-PromptFib     db  'Fibonacci',13,10,'$'
-PromptN       db  'Enter n: $'
-inputN        dw  ?     ;int n for Fib(n)
-fibRst        dw  ?     ;result from Fib(n)
-MsgFibRst1    db  'Fib($'
-MsgFibRst2    db  ')=$'
+PromptFib  db  'Fibonacci',13,10,'$'
+PromptN    db  'Enter n: $'
+MsgFib1    db  'Fib($'
+MsgFib2    db  ')=$'
 
 .CODE
 InputFib  PROC
           push bp               ;save the current bp (stack frame)
           MOV  bp, sp           ;create new bp from sp(top)
-
-          sPutStr PromptFib     ;print "[Fibonacci]"
-          ;Get user input
+;Print selected function
+          sPutStr PromptFib     ;print "Fibonacci"
+;Get user input
           sPutStr PromptN       ;print "Enter n: "
-          CALL    GetDec        ;get int x
-          MOV     inputN, AX
-          ;Call Fib(n)
-          PUSH    inputN        ;pass argument n
+          CALL    GetDec        ;get int n
+          MOV     BX, AX        ;move n to bx
+;Call Fib(n)
+          PUSH    BX            ;argument n
           CALL    Fib           ;Fib(n)
-          MOV     fibRst, AX    ;return value from Fib(n)
-          ;Print result
-          sPutStr MsgFibRst1    ;print "Fib("
-          MOV     AX, inputN
+          MOV     CX, AX        ;move result to cx
+;Print result
+          sPutStr MsgFib1       ;print "Fib("
+          MOV     AX, BX        ;move n to ax
           CALL    PutDec        ;print n
-          sPutStr MsgFibRst2    ;print ")="
-          MOV     AX, fibRst
+          sPutStr MsgFib2       ;print ")="
+          MOV     AX, CX        ;move result to ax
           CALL    PutDec        ;print result
           sPutStr newline       ;print new line
-
-          ;Return
+;Return
           pop     bp            ;restore the previous stack frame
           ret                   ;return (no parameter was passed)
 InputFib  ENDP
+
 ;InputAck----------------------------------------------
 .DATA
 PromptAck     db  'Ackerman',13,10,'$'
@@ -125,26 +113,20 @@ InputAck  PROC
           sPutStr PromptAck     ;print "Ackerman"
 ;Get user input
           sPutStr PromptX       ;print "Enter x: "
-          CALL    GetDec        ;get int x
+          CALL    GetDec        ;get input x
           MOV     BX, AX        ;x to bx
           sPutStr PromptY       ;print "Enter y: "
-          CALL    GetDec        ;get int y
+          CALL    GetDec        ;get input y
           MOV     CX, AX        ;y to cx
-;Print message
-          sPutStr MsgAckRst1    ;print "Ack("
-          MOV     AX, BX
-          CALL    PutDec        ;print x
-          sPutCh  ','           ;print ","
-          MOV     AX, CX
-          CALL    PutDec        ;print y
-          sPutStr MsgAckRst2    ;print ")="
 ;Call Ack(x,y)
           PUSH    BX            ;argument x
           PUSH    CX            ;argument y
           CALL    Ack           ;Ack(x,y)
 ;Print result
-          CALL    PutDec        ;print result
-          sPutStr newline       ;print new line
+          ;Print message
+          sPutStr newline
+          sPutCh  '='
+          CALL    PutDec
 ;Return
           pop     bp            ;restore the previous stack frame
           ret                   ;return (no parameter was passed)
@@ -201,7 +183,7 @@ Ack     PROC
         MOV     bp, sp         ;create new bp from sp(top)
         MOV     BX, word ptr [bp+6]   ;get x in bx
         MOV     CX, word ptr [bp+4]   ;get y in cx
-        MOV     AX, 0          ;Initialize ax = 0
+        ;MOV     AX, 0          ;Initialize ax = 0
 ; ------------------------------------------------(i=x,j=y)
 ; if (i == 0)
 ;    return j++                  //base case  when i=0
@@ -212,31 +194,32 @@ Ack     PROC
 ; ---------------------------------------------------------
         CMP     BX, 0         ;if (i == 0)
         JE      BaseAck       ;yes, base case        when i=0
+        JL      DoneAck       ;i<0 get out
         CMP     CX, 0         ;else if (j == 0)
         JE      RecurAck1     ;yes, recursive case1  when i>0,j=0
         JMP     RecurAck2     ;no, recursive case2   when i>0,j>0
 BaseAck:
 ;when i=0 in bx, j>0 in cx    ;
 ;debugging
-; PUSH    BX            ;arg i
-; PUSH    CX            ;arg j
-; CALL    PrintAck      ;print "A(i,j)"
+PUSH    BX            ;arg i
+PUSH    CX            ;arg j
+CALL    PrintAck      ;print "A(i,j)"
 ;basecase work
         MOV     AX, 1         ;j+1
         ADD     AX, CX        ;
         ;msg for debugging
-        sPutCh  'b',':',' '
-        CALL    PutDec
-        sPutStr newline
+        ; sPutCh  'b',':',' '
+        ; CALL    PutDec
+        ; sPutStr newline
         ;end msg
         JMP     DoneAck
 
 RecurAck1:
 ;when i>0 in bx, j=0 in cx    ;yes, Ack(i-1,1)
 ;debugging
-; PUSH    BX            ;arg i
-; PUSH    CX            ;arg j
-; CALL    PrintAck      ;print "A(i,j)"
+PUSH    BX            ;arg i
+PUSH    CX            ;arg j
+CALL    PrintAck      ;print "A(i,j)"
 ;recursive work
         MOV     AX, BX        ;i-1
         SUB     AX, 1
@@ -245,18 +228,18 @@ RecurAck1:
         PUSH    AX            ;argument 1
         CALL    Ack           ;call Ack(i-1,1)
         ;msg for debugging
-        sPutCh  '1',':',' '
-        CALL    PutDec
-        sPutStr newline
+        ; sPutCh  '1',':',' '
+        ; CALL    PutDec
+        ; sPutStr newline
         ;end msg
         JMP     DoneAck
 
 RecurAck2:
 ;when i>0 in bx, j>0 in cx    ;Ack(i-1, Ack(i,j-1))
 ;debugging
-; PUSH    BX            ;arg i
-; PUSH    CX            ;arg j
-; CALL    PrintAck      ;print "A(i,j)"
+PUSH    BX            ;arg i
+PUSH    CX            ;arg j
+CALL    PrintAck      ;print "A(i,j)"
 ;recursive work
         PUSH    BX            ;argument i
         MOV     AX, CX        ;j-1
@@ -264,9 +247,9 @@ RecurAck2:
         PUSH    AX            ;argument j-1
         CALL    Ack           ;Ack(i,j-1)
         ;msg for debugging
-        sPutCh  '2',':',':',' '
-        CALL    PutDec
-        sPutStr newline
+        ; sPutCh  '2',':',':',' '
+        ; CALL    PutDec
+        ; sPutStr newline
         ;end msg
         MOV     DX, AX        ;store Ack(i,j-1) in dx
         MOV     AX, BX        ;i-1
@@ -275,9 +258,9 @@ RecurAck2:
         PUSH    DX            ;argument Ack(i,j-1)
         CALL    Ack           ;call Ack(i-1, Ack(i,j-1))
         ;msg for debugging
-        sPutCh  '2',':',' '
-        CALL    PutDec
-        sPutStr newline
+        ; sPutCh  '2',':',' '
+        ; CALL    PutDec
+        ; sPutStr newline
         ;end msg
         JMP     DoneAck
 
