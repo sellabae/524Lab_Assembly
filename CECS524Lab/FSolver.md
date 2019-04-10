@@ -5,8 +5,8 @@ Assignment: [Function Solver](#Assignment)
 Assembly code: [FSolver.asm](../FSolver.asm)  
 
 Screenshots  
-...
-
+![fsolver screenshot1](images/fsolver_screenshot1.png)
+![fsolver screenshot2](images/fsolver_screenshot2.png)
 
 ## Assignment
 
@@ -47,8 +47,8 @@ int main() {
 2. Ackerman
 0. Quit
 Enter choice:1
-Enter n:2
-Fib(2)=3
+Enter n:3
+Fib(3)=2
 ```
 ```
 1. Fibonaaci
@@ -64,4 +64,30 @@ Ack(1,1)=3
 2. Ackerman
 0. Quit
 Enter choice:0
+```
+
+#### Ackerman function test sets
+```
+x	y	 Ack(x,y)
+0	0	 1
+0	1  2
+0	8  9
+1	4	 6
+2	1	 5
+2	9	 21
+3	8	 2045
+4	0	 13
+```
+#### Fibonacci test sets
+```
+n  Fib(n)
+1  1
+2  1
+3  2
+4  3
+5  5
+6  8
+10 55
+12 144
+16 987
 ```
