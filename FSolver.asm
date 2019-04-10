@@ -33,10 +33,10 @@ Main    ENDP
 ;-----------------------------------------------------
 ; MENU     1. Fibonacci    2. Ackerman    0. Quit
 ;-----------------------------------------------------
-PromptMenu    db  0Dh,0Ah,'-----------------------------------------------------',0Dh,0Ah,' MENU     1. Fibonacci    2. Ackerman    0. Quit',0Dh,0Ah,'-----------------------------------------------------',0Dh,0Ah,'$'
+PromptMenu    db  13,10,'-----------------------------------------------------',13,10,' MENU     1. Fibonacci    2. Ackerman    0. Quit',13,10,'-----------------------------------------------------',13,10,'$'
 PromptInput   db  'Select menu: $'
 menu          dw  ?
-
+newline       db  13,10
 .CODE
 Input   PROC
         ;subprogram prep
