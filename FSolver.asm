@@ -176,17 +176,15 @@ Fib     PROC
 RecurFib:
         PUSH    BX            ;store n in stack
 ;Fib(n-1)
-        MOV     AX, BX        ;n-1
-        SUB     AX, 1         ;
-        PUSH    AX            ;argument n-1
+        SUB     BX, 1         ;n-1 (bx=bx-1)
+        PUSH    BX            ;argument n-1
         CALL    Fib           ;call Fib(n-1)
         MOV     CX, AX        ;move result to cx
         POP     BX            ;get n back from stack to bx
         PUSH    CX            ;store Fib(n-1) in stack
 ;Fib(n-2)
-        MOV     AX, BX        ;n-2
-        SUB     AX, 2         ;
-        PUSH    AX            ;argument n-2
+        SUB     BX, 2         ;n-2 (bx=bx-2)
+        PUSH    BX            ;argument n-2
         CALL    Fib           ;call Fib(n-2)
         MOV     CX, AX        ;move result to cx
 ;Fib(n-1)+Fib(n-2)
@@ -217,55 +215,48 @@ Ack     PROC
 ;       return Ack(i-1, Ack(i,j-1)) //recursive2 when i>0,j>0
 ; }
 ; ------------------------------------------------------------
-        push    bp             ;save the current bp (stack frame)
-        mov     bp, sp         ;create new bp from sp(top)
+        push    bp            ;save the current bp (stack frame)
+        mov     bp, sp        ;create new bp from sp(top)
         MOV     BX, word ptr [bp+6]   ;get x in stack into bx
         MOV     CX, word ptr [bp+4]   ;get y in stack into cx
-        MOV     AX, 0          ;Initialize ax = 0
+        MOV     AX, 0         ;initialize ax = 0
 ;Branching
         CMP     BX, 0         ;if (i == 0)
-        JE      BaseAck       ;yes, base case        when i=0
-        JL      DoneAck       ;i<0 get out
-        CMP     CX, 0         ;else if (j == 0)
-        JE      RecurAck1     ;yes, recursive case1  when i>0,j=0
-        JMP     RecurAck2     ;no, recursive case2   when i>0,j>0
+        JL      DoneAck       ;i<0, return 0(in ax)
+        JE      BaseAck       ;i=0, base case             when i=0
+        CMP     CX, 0         ;i>0, else if (j == 0)
+        JL      DoneAck       ;     j<0, return 0(in ax)
+        JE      RecurAck1     ;     j=0, recursive case1  when i>0,j=0
+        JMP     RecurAck2     ;     j>0, recursive case2  when i>0,j>0
 
 BaseAck:
-;Basecase work
-;when i=0 in bx, j>0 in cx    then j++
-        MOV     AX, 1         ;j+1
-        ADD     AX, CX        ;
+;Basecase work,   when i=0 in bx, j>0 in cx    then j++
+        ADD     CX, 1         ;j+1
+        MOV     AX, CX        ;move j+1 to ax
         JMP     DoneAck
 
 RecurAck1:
-;Recursive work
-;when i>0 in bx, j=0 in cx    then Ack(i-1,1)
-        MOV     AX, BX        ;i-1
-        SUB     AX, 1         ;
-        PUSH    AX            ;argument i-1
-        MOV     AX, 1         ;1
-        PUSH    AX            ;argument 1
+;Recursive work,  when i>0 in bx, j=0 in cx    then Ack(i-1,1)
+        SUB     BX, 1         ;i-1
+        PUSH    BX            ;argument i-1
+        MOV     CX, 1         ;1
+        PUSH    CX            ;argument 1
         CALL    Ack           ;call Ack(i-1,1)
         JMP     DoneAck
 
 RecurAck2:
-;Recursive work
-;when i>0 in bx, j>0 in cx    then Ack(i-1, Ack(i,j-1))
-;Ack(i-1,
-        MOV     AX, BX        ;i-1
-        SUB     AX, 1         ;
-        PUSH    AX            ;store i-1 in stack
+;Recursive work,  when i>0 in bx, j>0 in cx    then Ack(i-1, Ack(i,j-1))
+        PUSH    BX            ;store i in stack
 ;Ack(i,j-1)
-        MOV     AX, CX        ;j-1
-        SUB     AX, 1         ;
+        SUB     CX, 1         ;j-1
         PUSH    BX            ;argument i
-        PUSH    AX            ;argument j-1
+        PUSH    CX            ;argument j-1
         CALL    Ack           ;Ack(i,j-1)
-        MOV     DX, AX        ;move Ack(i,j-1) in dx
 ;Ack(i-1, Ack(i,j-1))
-        POP     BX            ;get i-1 back from stack
+        POP     BX            ;get i back from stack
+        SUB     BX, 1         ;i-1
         PUSH    BX            ;argument i-1
-        PUSH    DX            ;argument Ack(i,j-1)
+        PUSH    AX            ;argument Ack(i,j-1)
         CALL    Ack           ;call Ack(i-1, Ack(i,j-1))
         JMP     DoneAck
 
@@ -277,17 +268,16 @@ DoneAck:
 Ack     ENDP
 
 
-;[PrintAck] for debugging-------------------------
+;PrintAck-----------------------------------------
 ;; ;use this subprogram for debugging Ackerman
 ;; PUSH    BX            ;arg i
 ;; PUSH    CX            ;arg j
 ;; CALL    PrintAck      ;print "A(i,j)"
 .CODE
 PrintAck  PROC
-;int PrintAck(int i, int j)
           push    bp        ;save the current bp (stack frame)
           mov     bp, sp    ;create new bp from sp(top)
-;Print A(i,j)
+;Print " A(i,j)"
           sPutCh  ' ','A','('                ;print "A("
           MOV     AX, word ptr [bp+6]   ;get i
           CALL    PutDec                ;print i
