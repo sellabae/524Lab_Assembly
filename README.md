@@ -18,7 +18,7 @@ all under [CECS524Lab](CECS524Lab/) directory
 2. [Lab11](CECS524Lab/lab11.md). Payment Calculation Program
 3. [Lab12](). Celsius to Fahrenheit Program
 4. [Lab13](CECS524Lab/lab13.md). Sum 1 to n Program
-5. [FuncSolver](CECS524Lab/FuncSolver.md). Fibonacci and Ackerman program
+5. [FunctionSolver](CECS524Lab/FSolver.md). Fibonacci and Ackerman program
 
 ### ...
 * Coding Style: [ASM-Assembly-Coding-Standard-Assembly-7](http://www.sourceformat.com/standard/asm-coding-standard-assembly-7.htm)
