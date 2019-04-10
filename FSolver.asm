@@ -47,12 +47,12 @@ Input   PROC
         push    bp            ;save the current bp (stack frame)
         mov     bp, sp        ;create new bp from sp(top)
 AskInput:
-;Get user input menu
+;Get menu input
         sPutStr PromptMenu    ;print menu options
         sPutStr PromptInput   ;print input prompt
-        CALL    GetDec        ;get an integer (stored in ax)
-        MOV     BX, AX        ;menu = ax
-;switch(menu)
+        CALL    GetDec        ;get menu input
+        MOV     BX, AX        ;move choice to bx
+;switch(choice)
         CMP     BX, 0         ;case 0:
         JE      Menu0
         CMP     BX, 1         ;case 1:
@@ -87,7 +87,7 @@ InputFib  PROC
 ;Get user input and store in stack as local variable
 EnterN:
           sPutStr PromptN       ;print "Enter n: "
-          CALL    GetDec        ;get int n
+          CALL    GetDec        ;get input n
           MOV     BX, AX        ;move n to bx
           CMP     BX, 0         ;if (n < 0)
           JGE     ContInputFib  ;n>=0, continue InputFib
@@ -101,7 +101,7 @@ ContInputFib:
           MOV     CX, AX        ;move result to cx
 ;Print result
           sPutStr MsgFib1       ;print "Fib("
-          POP     AX            ;get local n back from stack
+          POP     AX            ;get input n back from stack to ax
           CALL    PutDec        ;print n
           sPutStr MsgFib2       ;print ")="
           MOV     AX, CX        ;move result to ax
@@ -153,8 +153,8 @@ ContInputAck:
           CALL    Ack           ;call Ack(x,y)
           MOV     DX, AX        ;move result to dx
 ;Get local variables back
-          POP     CX            ;get local y from stack
-          POP     BX            ;get local x from stack
+          POP     CX            ;get input y from stack to cx
+          POP     BX            ;get input x from stack to bx
 ;Print result
           sPutStr MsgAck1       ;print "Ack("
           MOV     AX, BX        ;move x to ax
@@ -164,7 +164,7 @@ ContInputAck:
           CALL    PutDec        ;print y
           sPutStr MsgAck3       ;print ")="
           MOV     AX, DX        ;move result to ax
-          CALL    PutDec        ;print result in ax
+          CALL    PutDec        ;print result
           sPutStr newline       ;print new line
 ;Return
           pop     bp            ;restore the previous stack frame
@@ -184,7 +184,7 @@ Fib     PROC
 ; ------------------------------------------------------------
         push    bp            ;save the current bp (stack frame)
         mov     bp, sp        ;create new bp from sp(top)
-        MOV     BX, word ptr [bp+4]   ;get n in stack into bx
+        MOV     BX, word ptr [bp+4]   ;get param n in stack into bx
         MOV     AX, 0         ;initialize ax = 0
 ;Branching
         CMP     BX, 0         ;if(n < 0)
@@ -238,8 +238,8 @@ Ack     PROC
 ; ------------------------------------------------------------
         push    bp            ;save the current bp (stack frame)
         mov     bp, sp        ;create new bp from sp(top)
-        MOV     BX, word ptr [bp+6]   ;get x in stack into bx
-        MOV     CX, word ptr [bp+4]   ;get y in stack into cx
+        MOV     BX, word ptr [bp+6]   ;get param x in stack into bx
+        MOV     CX, word ptr [bp+4]   ;get param y in stack into cx
         MOV     AX, 0         ;initialize ax = 0
 ;Branching
         CMP     BX, 0         ;if (i == 0)
@@ -274,7 +274,7 @@ IJGreater:
         PUSH    CX            ;argument j-1
         CALL    Ack           ;Ack(i,j-1)
 ;Ack(i-1, Ack(i,j-1))
-        POP     BX            ;get i back from stack
+        POP     BX            ;get i back from stack to bx
         SUB     BX, 1         ;i-1
         PUSH    BX            ;argument i-1
         PUSH    AX            ;argument Ack(i,j-1)
@@ -299,16 +299,16 @@ PrintAck  PROC
           push    bp        ;save the current bp (stack frame)
           mov     bp, sp    ;create new bp from sp(top)
 ;Print " A(i,j)"
-          sPutCh  ' ','A','('                ;print "A("
-          MOV     AX, word ptr [bp+6]   ;get i
+          sPutCh  ' ','A','('           ;print "A("
+          MOV     AX, word ptr [bp+6]   ;get param i from stack
           CALL    PutDec                ;print i
           sPutCh  ','                   ;print ","
-          MOV     AX, word ptr [bp+4]   ;get j
+          MOV     AX, word ptr [bp+4]   ;get param j from stack
           CALL    PutDec                ;print j
-          sPutCh  ')'               ;print ")"
+          sPutCh  ')'                   ;print ")"
 ;Return
           pop     bp       ;restore the previous stack frame
-          ret     4        ;2*2=4 because 2 params were in stack
+          ret     4        ;4 because 2 params were in stack
 PrintAck  ENDP
 
 
