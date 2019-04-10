@@ -113,46 +113,38 @@ InputFib  PROC
 InputFib  ENDP
 ;InputAck----------------------------------------------
 .DATA
-PromptAck     db  'Ackerman',0Dh,0Ah,'$'
+PromptAck     db  'Ackerman',13,10,'$'
 PromptX       db  'Enter x: $'
 PromptY       db  'Enter y: $'
-inputX        dw  ?     ;int x, y for Ack(x,y)
-inputY        dw  ?
-ackRst        dw  ?     ;result from Ack(x,y)
-MsgAckRst1    db  'Ack($'
-MsgAckRst2    db  ')=$'
-
 .CODE
 InputAck  PROC
           push bp               ;save the current bp (stack frame)
           MOV  bp, sp           ;create new bp from sp(top)
-
-          sPutStr PromptAck     ;print "[Ackerman]"
-          ;Get user input
+;Print selected function
+          sPutStr PromptAck     ;print "Ackerman"
+;Get user input
           sPutStr PromptX       ;print "Enter x: "
           CALL    GetDec        ;get int x
-          MOV     inputX, AX
+          MOV     BX, AX        ;x to bx
           sPutStr PromptY       ;print "Enter y: "
           CALL    GetDec        ;get int y
-          MOV     inputY, AX
-          ;Call Ack(x,y)
-          PUSH    inputX        ;pass argument x
-          PUSH    inputY        ;pass argument y
-          CALL    Ack           ;Ack(x,y)
-          MOV     ackRst, AX    ;return value from Ack(x,y)
-          ;Print result
-          sPutStr MsgAckRst1  ;print "Ack("
-          MOV     AX, inputX
+          MOV     CX, AX        ;y to cx
+;Print message
+          sPutStr MsgAckRst1    ;print "Ack("
+          MOV     AX, BX
           CALL    PutDec        ;print x
-          _putch  44            ;print ","
-          MOV     AX, inputY
+          sPutCh  ','           ;print ","
+          MOV     AX, CX
           CALL    PutDec        ;print y
           sPutStr MsgAckRst2    ;print ")="
-          MOV     AX, ackRst
+;Call Ack(x,y)
+          PUSH    BX            ;argument x
+          PUSH    CX            ;argument y
+          CALL    Ack           ;Ack(x,y)
+;Print result
           CALL    PutDec        ;print result
-          _putch  13, 10        ;print new line
-
-          ;Return
+          sPutCh  13, 10        ;print new line
+;Return
           pop     bp            ;restore the previous stack frame
           ret                   ;return (no parameter was passed)
 InputAck  ENDP
