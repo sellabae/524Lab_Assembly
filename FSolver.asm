@@ -35,7 +35,6 @@ Main    ENDP
 ;-----------------------------------------------------
 PromptMenu    db  13,10,'-----------------------------------------------------',13,10,' MENU     1. Fibonacci    2. Ackerman    0. Quit',13,10,'-----------------------------------------------------',13,10,'$'
 PromptInput   db  'Select menu: $'
-; menu          dw  ?
 .CODE
 Input   PROC
         ;subprogram prep
@@ -72,7 +71,6 @@ PromptFib  db  'Fibonacci',13,10,'$'
 PromptN    db  'Enter n: $'
 MsgFib1    db  'Fib($'
 MsgFib2    db  ')=$'
-
 .CODE
 InputFib  PROC
           push bp               ;save the current bp (stack frame)
@@ -102,31 +100,46 @@ InputFib  ENDP
 
 ;InputAck----------------------------------------------
 .DATA
-PromptAck     db  'Ackerman',13,10,'$'
-PromptX       db  'Enter x: $'
-PromptY       db  'Enter y: $'
+PromptAck   db  'Ackerman',13,10,'$'
+PromptX     db  'Enter x: $'
+PromptY     db  'Enter y: $'
+MsgAck1     db  'Ack($'
+MsgAck2     db  ',$'
+MsgAck3     db  ')=$'
 .CODE
 InputAck  PROC
           push bp               ;save the current bp (stack frame)
           MOV  bp, sp           ;create new bp from sp(top)
 ;Print selected function
           sPutStr PromptAck     ;print "Ackerman"
-;Get user input
+;Get user input and store in stack as local variables
           sPutStr PromptX       ;print "Enter x: "
           CALL    GetDec        ;get input x
-          MOV     BX, AX        ;x to bx
+          MOV     BX, AX        ;move x to bx
+          PUSH    BX            ;store x in stack
           sPutStr PromptY       ;print "Enter y: "
           CALL    GetDec        ;get input y
-          MOV     CX, AX        ;y to cx
-;Call Ack(x,y)
+          MOV     CX, AX        ;move y to cx
+          PUSH    CX            ;store y in stack
+;Call Fib(n)
           PUSH    BX            ;argument x
           PUSH    CX            ;argument y
-          CALL    Ack           ;Ack(x,y)
+          CALL    Ack           ;call Ack(x,y)
+          MOV     DX, AX        ;move result to dx
+;Get local variables back
+          POP     CX            ;get local y from stack
+          POP     BX            ;get local x from stack
 ;Print result
-          ;Print message
           sPutStr newline
-          sPutCh  '='
-          CALL    PutDec
+          sPutStr MsgAck1       ;print "Ack("
+          MOV     AX, BX        ;move x to ax
+          CALL    PutDec        ;print x
+          sPutStr MsgAck2       ;print ","
+          MOV     AX, CX        ;move y to ax
+          CALL    PutDec        ;print y
+          sPutStr MsgAck3       ;print ")="
+          MOV     AX, DX        ;move result to ax
+          CALL    PutDec        ;print result in ax
 ;Return
           pop     bp            ;restore the previous stack frame
           ret                   ;return (no parameter was passed)
