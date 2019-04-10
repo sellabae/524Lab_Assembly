@@ -90,7 +90,7 @@ EnterN:
           CALL    GetDec        ;get int n
           MOV     BX, AX        ;move n to bx
           CMP     BX, 0         ;if (n < 0)
-          JG      ContInputFib  ;n>=0, continue InputFib
+          JGE     ContInputFib  ;n>=0, continue InputFib
           sPutStr MsgNegN       ;n<0,  print "Enter zero or positive."
           JMP     EnterN        ;ask input again
 ContInputFib:
@@ -193,7 +193,6 @@ Fib     PROC
         JG      RecurFib      ;n>1,   recursive
         MOV     AX, BX        ;n=1,0, return n
         JMP     DoneFib       ;
-        MOV     AX, 0         ;never executed
 
 RecurFib:
         PUSH    BX            ;store n in stack
@@ -228,7 +227,7 @@ Fib     ENDP
 .CODE
 Ack     PROC
 ; ------------------------------------------------------------
-; int Ack(int i, int j) {
+; int Ack(int i, int j) {           //assume i,j>=0
 ;    if (i == 0)
 ;       return j++                  //base case  when i=0
 ;    else if (j == 0)
@@ -244,20 +243,20 @@ Ack     PROC
         MOV     AX, 0         ;initialize ax = 0
 ;Branching
         CMP     BX, 0         ;if (i == 0)
-        JL      DoneAck       ;i<0, return 0(in ax)
-        JE      BaseAck       ;i=0, base case             when i=0
-        CMP     CX, 0         ;i>0, else if (j == 0)
-        JL      DoneAck       ;     j<0, return 0(in ax)
-        JE      RecurAck1     ;     j=0, recursive case1  when i>0,j=0
-        JMP     RecurAck2     ;     j>0, recursive case2  when i>0,j>0
+        JL      DoneAck       ;i<0, return 0
+        JE      IZero         ;i=0, base case        when i=0
+        CMP     CX, 0         ;i>0, if (j == 0)
+        JL      DoneAck       ;     j<0, return 0
+        JE      JZero         ;     j=0, recursive1  when i>0,j=0
+        JMP     IJGreater     ;     j>0, recursive2  when i>0,j>0
 
-BaseAck:
+IZero:
 ;Basecase work,   when i=0 in bx, j>0 in cx    then j++
         ADD     CX, 1         ;j+1
         MOV     AX, CX        ;move j+1 to ax
         JMP     DoneAck       ;
 
-RecurAck1:
+JZero:
 ;Recursive work,  when i>0 in bx, j=0 in cx    then Ack(i-1,1)
         SUB     BX, 1         ;i-1
         PUSH    BX            ;argument i-1
@@ -266,7 +265,7 @@ RecurAck1:
         CALL    Ack           ;call Ack(i-1,1)
         JMP     DoneAck       ;
 
-RecurAck2:
+IJGreater:
 ;Recursive work,  when i>0 in bx, j>0 in cx    then Ack(i-1, Ack(i,j-1))
         PUSH    BX            ;store i in stack
 ;Ack(i,j-1)
