@@ -8,6 +8,16 @@ Screenshots
 ![fsolver screenshot1](images/fsolver_screenshot1.png)
 ![fsolver screenshot2](images/fsolver_screenshot2.png)
 
+## Program sketch of FSolver.asm
+```
+int Fib(int n);
+int Ack(int x, int y);
+void InputFib(); //ask input, call Fib(), display result
+void InputAck(); //ask input, call Ack(), display result
+void Menu();     //ask menu, call InputFib() or InputAck()
+void main();     //call Menu()
+```
+
 ## Assignment
 
 **CECS 524  Function Solver**  
@@ -19,14 +29,12 @@ Write an IBMPC assembly language program to do the following:
 ```
 int	Fibonacci(int n);
 int	Ackerman(int x, int y);
-void	input() {
+void input() {
 	int	x, y;
-
 	//get input from user
 	//call the appropriate function
 	//display the appropriate answer
 }
-
 int main() {
 	//call input
 }

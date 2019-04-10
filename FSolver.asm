@@ -2,13 +2,17 @@
 ; "Function Solver"
 ; CECS 524 Spring2019 - Spring break project
 ;
-; This program solves
+; This program solves:
 ; 1) Fibonacci sequence
 ; 2) Ackerman's function
 ;
-; This program consists of
-; - 3 procedures: Input(), InputFib(), InputAck()
-; - 2 functions:  Fib(n), Ack(x,y)
+; C++ sketch of this program:
+; int Fib(int n);
+; int Ack(int x, int y);
+; void InputFib(); //ask input, call Fib(), display result
+; void InputAck(); //ask input, call Ack(), display result
+; void Menu();     //ask menu, call InputFib() or InputAck()
+; void main();     //call Menu()
 ;
 ; Sella Bae
 ; 4/9/2019
