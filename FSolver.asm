@@ -180,7 +180,7 @@ Fib     PROC
 ; int Fib(int n) {
 ;    if( n <= 1 )   return n              //base case
 ;    else   return Fib(n-1) + Fib(n-2)    //recursive
-; }
+; } //let's change this to a better Fib() algorithm later!
 ; ------------------------------------------------------------
         push    bp            ;save the current bp (stack frame)
         mov     bp, sp        ;create new bp from sp(top)
@@ -193,6 +193,7 @@ Fib     PROC
         JG      RecurFib      ;n>1,   recursive
         MOV     AX, BX        ;n=1,0, return n
         JMP     DoneFib       ;
+        MOV     AX, 0         ;never executed
 
 RecurFib:
         PUSH    BX            ;store n in stack
