@@ -15,7 +15,7 @@ include Pcmac.inc
 .STACK 100h
 
 .DATA
-ProgTitle     db  '[CECS 524 Function Solver]',0Dh,0Ah,'$'  ;string with new newline
+ProgTitle     db  '[CECS 524 Function Solver]',13,10,'$'  ;string with new newline
 .CODE
 Main    PROC
         MOV     AX, @data
@@ -37,6 +37,7 @@ PromptMenu    db  13,10,'-----------------------------------------------------',
 PromptInput   db  'Select menu: $'
 menu          dw  ?
 newline       db  13,10
+
 .CODE
 Input   PROC
         ;subprogram prep
@@ -77,7 +78,7 @@ Input   ENDP
 
 ;InputFib----------------------------------------------
 .DATA
-PromptFib     db  'Fibonacci',0Dh,0Ah,'$'
+PromptFib     db  'Fibonacci',13,10,'$'
 PromptN       db  'Enter n: $'
 inputN        dw  ?     ;int n for Fib(n)
 fibRst        dw  ?     ;result from Fib(n)
@@ -105,7 +106,7 @@ InputFib  PROC
           sPutStr MsgFibRst2    ;print ")="
           MOV     AX, fibRst
           CALL    PutDec        ;print result
-          _putch  0Dh, 0Ah      ;print new line
+          sPutStr newline       ;print new line
 
           ;Return
           pop     bp            ;restore the previous stack frame
@@ -143,7 +144,7 @@ InputAck  PROC
           CALL    Ack           ;Ack(x,y)
 ;Print result
           CALL    PutDec        ;print result
-          sPutCh  13, 10        ;print new line
+          sPutStr newline       ;print new line
 ;Return
           pop     bp            ;restore the previous stack frame
           ret                   ;return (no parameter was passed)
@@ -226,7 +227,7 @@ BaseAck:
         ;msg for debugging
         sPutCh  'b',':',' '
         CALL    PutDec
-        sPutCh  13, 10
+        sPutStr newline
         ;end msg
         JMP     DoneAck
 
@@ -246,7 +247,7 @@ RecurAck1:
         ;msg for debugging
         sPutCh  '1',':',' '
         CALL    PutDec
-        sPutCh  13, 10
+        sPutStr newline
         ;end msg
         JMP     DoneAck
 
@@ -265,7 +266,7 @@ RecurAck2:
         ;msg for debugging
         sPutCh  '2',':',':',' '
         CALL    PutDec
-        sPutCh  13, 10
+        sPutStr newline
         ;end msg
         MOV     DX, AX        ;store Ack(i,j-1) in dx
         MOV     AX, BX        ;i-1
@@ -276,7 +277,7 @@ RecurAck2:
         ;msg for debugging
         sPutCh  '2',':',' '
         CALL    PutDec
-        sPutCh  13, 10
+        sPutStr newline
         ;end msg
         JMP     DoneAck
 
