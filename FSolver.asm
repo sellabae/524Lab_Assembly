@@ -19,7 +19,7 @@ include Pcmac.inc
 .STACK 100h
 
 .DATA
-ProgTitle  db  '[CECS 524 Function Solver by Sella Bae]',13,10,'$'  ;string with new newline
+ProgTitle  db  '[CECS 524 Function Solver by Sella Bae]',13,10,'$'
 newline    db  13,10,'$'
 MsgNegN    db  'Enter zero or positive.',13,10,'$'
 .CODE
@@ -28,13 +28,13 @@ Main    PROC
         MOV     ds, AX
 
         sPutStr ProgTitle     ;print program title
-        CALL    Input         ;call Input
+        CALL    Menu          ;call Menu
 
         _exit                 ;exit program
 Main    ENDP
 
 
-;Input--------------------------------------------------
+;Menu--------------------------------------------------
 .DATA
 ;-----------------------------------------------------
 ; MENU     1. Fibonacci    2. Ackerman    0. Quit
@@ -42,7 +42,7 @@ Main    ENDP
 PromptMenu    db  13,10,'-----------------------------------------------------',13,10,' MENU     1. Fibonacci    2. Ackerman    0. Quit',13,10,'-----------------------------------------------------',13,10,'$'
 PromptInput   db  'Select menu: $'
 .CODE
-Input   PROC
+Menu    PROC
         ;subprogram prep
         push    bp            ;save the current bp (stack frame)
         mov     bp, sp        ;create new bp from sp(top)
@@ -69,7 +69,7 @@ Menu2:  ;Ackerman
 Menu0:  ;Exit
         pop     bp            ;restore the previous stack frame
         ret                   ;return (no parameter was passed)
-Input   ENDP
+Menu    ENDP
 
 
 ;InputFib----------------------------------------------
