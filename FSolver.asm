@@ -44,7 +44,7 @@ PromptInput   db  'Select menu: $'
 Input   PROC
         ;subprogram prep
         push    bp            ;save the current bp (stack frame)
-        MOV     bp, sp        ;create new bp from sp(top)
+        mov     bp, sp        ;create new bp from sp(top)
 AskInput:
         ;get input menu
         sPutStr PromptMenu    ;print menu options
@@ -80,20 +80,21 @@ MsgFib2    db  ')=$'
 .CODE
 InputFib  PROC
           push bp               ;save the current bp (stack frame)
-          MOV  bp, sp           ;create new bp from sp(top)
+          mov  bp, sp           ;create new bp from sp(top)
 ;Print selected function
           sPutStr PromptFib     ;print "Fibonacci"
 ;Get user input
           sPutStr PromptN       ;print "Enter n: "
           CALL    GetDec        ;get int n
           MOV     BX, AX        ;move n to bx
+          PUSH    BX            ;store n in stack
 ;Call Fib(n)
           PUSH    BX            ;argument n
           CALL    Fib           ;Fib(n)
           MOV     CX, AX        ;move result to cx
 ;Print result
           sPutStr MsgFib1       ;print "Fib("
-          MOV     AX, BX        ;move n to ax
+          POP     AX            ;get n back from stack
           CALL    PutDec        ;print n
           sPutStr MsgFib2       ;print ")="
           MOV     AX, CX        ;move result to ax
@@ -116,7 +117,7 @@ MsgAck3     db  ')=$'
 .CODE
 InputAck  PROC
           push bp               ;save the current bp (stack frame)
-          MOV  bp, sp           ;create new bp from sp(top)
+          mov  bp, sp           ;create new bp from sp(top)
 ;Print selected function
           sPutStr PromptAck     ;print "Ackerman"
 ;Get user input and store in stack as local variables
@@ -137,7 +138,6 @@ InputAck  PROC
           POP     CX            ;get local y from stack
           POP     BX            ;get local x from stack
 ;Print result
-          sPutStr newline       ;print new line
           sPutStr MsgAck1       ;print "Ack("
           MOV     AX, BX        ;move x to ax
           CALL    PutDec        ;print x
@@ -164,31 +164,34 @@ Fib     PROC
 ;    else   return Fib(n-1) + Fib(n-2)    //recursive
 ; }
 ; ------------------------------------------------------------
-        push bp               ;save the current bp (stack frame)
-        MOV  bp, sp           ;create new bp from sp(top)
-        MOV     AX, word ptr [bp+4]   ;get n in stack into ax
+        push    bp               ;save the current bp (stack frame)
+        mov     bp, sp           ;create new bp from sp(top)
+        MOV     BX, word ptr [bp+4]   ;get n in stack into bx
 ;Branching
-        CMP     AX, 1         ;if (n <= 1)
-        JG      RecurFib      ;no, recursive case
-        JMP     DoneFib       ;yes, base case. Fib(n)=n, where n=1,0
+        CMP     BX, 1         ;if (n <= 1)
+        JG      RecurFib      ;no, recursive
+        MOV     AX, BX        ;yes, return n, where n=1,0
+        JMP     DoneFib       ;
 
 RecurFib:
-        PUSH    AX            ;store n in stack
+        PUSH    BX            ;store n in stack
 ;Fib(n-1)
-        SUB     AX, 1         ;n-1
+        MOV     AX, BX        ;n-1
+        SUB     AX, 1         ;
         PUSH    AX            ;argument n-1
         CALL    Fib           ;call Fib(n-1)
-        MOV     CX, AX        ;Fib(n-1) result in cx
-        POP     AX            ;pop n
+        MOV     CX, AX        ;move result to cx
+        POP     BX            ;get n back from stack to bx
         PUSH    CX            ;store Fib(n-1) in stack
 ;Fib(n-2)
-        SUB     AX, 2         ;n-2
+        MOV     AX, BX        ;n-2
+        SUB     AX, 2         ;
         PUSH    AX            ;argument n-2
         CALL    Fib           ;call Fib(n-2)
-        MOV     CX, AX        ;Fib(n-2) result in cx
-        POP     AX            ;get Fib(n-1) back from stack to ax
+        MOV     CX, AX        ;move result to cx
 ;Fib(n-1)+Fib(n-2)
-        ADD     AX, CX        ;Fib(n-1) + Fib(n-2)
+        POP     AX            ;get Fib(n-1) back from stack to ax
+        ADD     AX, CX        ;result = Fib(n-1) + Fib(n-2)
 
 DoneFib:
 ;Return back to caller
@@ -215,7 +218,7 @@ Ack     PROC
 ; }
 ; ------------------------------------------------------------
         push    bp             ;save the current bp (stack frame)
-        MOV     bp, sp         ;create new bp from sp(top)
+        mov     bp, sp         ;create new bp from sp(top)
         MOV     BX, word ptr [bp+6]   ;get x in stack into bx
         MOV     CX, word ptr [bp+4]   ;get y in stack into cx
         MOV     AX, 0          ;Initialize ax = 0
@@ -281,10 +284,10 @@ Ack     ENDP
 ;; CALL    PrintAck      ;print "A(i,j)"
 .CODE
 PrintAck  PROC
-;int Print(int i, int j)
+;int PrintAck(int i, int j)
           push    bp        ;save the current bp (stack frame)
-          MOV     bp, sp    ;create new bp from sp(top)
-          ;print A(i,j)=result
+          mov     bp, sp    ;create new bp from sp(top)
+;Print A(i,j)
           sPutCh  ' ','A','('                ;print "A("
           MOV     AX, word ptr [bp+6]   ;get i
           CALL    PutDec                ;print i
@@ -292,7 +295,7 @@ PrintAck  PROC
           MOV     AX, word ptr [bp+4]   ;get j
           CALL    PutDec                ;print j
           sPutCh  ')'               ;print ")"
-          ;return
+;Return
           pop     bp       ;restore the previous stack frame
           ret     4        ;2*2=4 because 2 params were in stack
 PrintAck  ENDP
