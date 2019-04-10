@@ -203,73 +203,115 @@ Fib     ENDP
 ;A(i,j) = A(i-1, A(i,j-1))  for i,j>0
 .CODE
 Ack     PROC
+;int Ack(int x, int y)
         push    bp             ;save the current bp (stack frame)
         MOV     bp, sp         ;create new bp from sp(top)
-        MOV     BX, word ptr [bp+6]   ;get x in ax
-        MOV     CX, word ptr [bp+4]   ;get y in bx
+        MOV     BX, word ptr [bp+6]   ;get x in bx
+        MOV     CX, word ptr [bp+4]   ;get y in cx
         MOV     AX, 0          ;Initialize ax = 0
-; -------------------------------------------(i=x,j=y)
-; if (i == 0) {
-;   if (j >= 0)
-;     return j+1                //base case   A(0,j)
-; } else if (i > 0) {
-;   if (j == 0)
-;     return Ack(i-1, 1)        //recursive1  A(i,0)
-;   else
-;     return Ack(i-1, Ack(i,j-1)) //recursive2  A(i,j)
-; }
-; ----------------------------------------------------
+; ------------------------------------------------(i=x,j=y)
+; if (i == 0)
+;    return j++                  //base case  when i=0
+; else if (j == 0)
+;    return Ack(i-1, 1)          //recursive1 when i>0,j=0
+; else
+;    return Ack(i-1, Ack(i,j-1)) //recursive2 when i>0,j>0
+; ---------------------------------------------------------
         CMP     BX, 0         ;if (i == 0)
-        JG      RecurAck1     ;no, recursive case
-        CMP     CX, 0         ;yes, if (j >= 0)
-        JL      DoneAck       ;     no, 0 in ax
+        JE      BaseAck       ;yes, base case        when i=0
+        CMP     CX, 0         ;else if (j == 0)
+        JE      RecurAck1     ;yes, recursive case1  when i>0,j=0
+        JMP     RecurAck2     ;no, recursive case2   when i>0,j>0
+BaseAck:
 ;when i=0 in bx, j>0 in cx    ;
-    ; sPutStr MsgAckRst1    ;print "Ack("
-    ; push    ax
-    ; push    bx
-    ; CALL    PutDec        ;print i
-    ; _putch  44            ;print ","
-    ; pop     ax
-    ; mov     bx, ax
-    ; CALL    PutDec        ;print j
-    ; sPutStr MsgAckRst2    ;print )
-    ; pop     ax
-        MOV     AX, 1         ;     yes, j++
+;debugging
+; PUSH    BX            ;arg i
+; PUSH    CX            ;arg j
+; CALL    PrintAck      ;print "A(i,j)"
+;basecase work
+        MOV     AX, 1         ;j+1
         ADD     AX, CX        ;
-        JMP     DoneAck       ;          base case
+        ;msg for debugging
+        sPutCh  'b',':',' '
+        CALL    PutDec
+        sPutCh  13, 10
+        ;end msg
+        JMP     DoneAck
 
 RecurAck1:
-        CMP     CX, 0         ;if (j == 0)
-        JG      RecurAck2     ;no, recursive case2
 ;when i>0 in bx, j=0 in cx    ;yes, Ack(i-1,1)
-        MOV     AX, BX
-        SUB     AX, 1         ;i-1
+;debugging
+; PUSH    BX            ;arg i
+; PUSH    CX            ;arg j
+; CALL    PrintAck      ;print "A(i,j)"
+;recursive work
+        MOV     AX, BX        ;i-1
+        SUB     AX, 1
         PUSH    AX            ;argument i-1
-        MOV     CX, 1         ;1
-        PUSH    CX            ;argument 1
+        MOV     AX, 1         ;1
+        PUSH    AX            ;argument 1
         CALL    Ack           ;call Ack(i-1,1)
+        ;msg for debugging
+        sPutCh  '1',':',' '
+        CALL    PutDec
+        sPutCh  13, 10
+        ;end msg
         JMP     DoneAck
 
 RecurAck2:
 ;when i>0 in bx, j>0 in cx    ;Ack(i-1, Ack(i,j-1))
+;debugging
+; PUSH    BX            ;arg i
+; PUSH    CX            ;arg j
+; CALL    PrintAck      ;print "A(i,j)"
+;recursive work
         PUSH    BX            ;argument i
         MOV     AX, CX        ;j-1
         SUB     AX, 1
         PUSH    AX            ;argument j-1
         CALL    Ack           ;Ack(i,j-1)
+        ;msg for debugging
+        sPutCh  '2',':',':',' '
+        CALL    PutDec
+        sPutCh  13, 10
+        ;end msg
         MOV     DX, AX        ;store Ack(i,j-1) in dx
         MOV     AX, BX        ;i-1
         SUB     AX, 1
         PUSH    AX            ;argument i-1
         PUSH    DX            ;argument Ack(i,j-1)
         CALL    Ack           ;call Ack(i-1, Ack(i,j-1))
+        ;msg for debugging
+        sPutCh  '2',':',' '
+        CALL    PutDec
+        sPutCh  13, 10
+        ;end msg
         JMP     DoneAck
 
 DoneAck:
+        ;return back to caller
         pop     bp            ;restore the previous stack frame
         ret     4             ;4 because Ack() had 2 parameters(local var)
 Ack     ENDP
 
+;[PrintAck] for debugging-------------------------
+.CODE
+PrintAck  PROC
+;int Print(int i, int j)
+          push    bp        ;save the current bp (stack frame)
+          MOV     bp, sp    ;create new bp from sp(top)
+          ;print A(i,j)=result
+          sPutCh  ' ','A','('                ;print "A("
+          MOV     AX, word ptr [bp+6]   ;get i
+          CALL    PutDec                ;print i
+          sPutCh  ','                   ;print ","
+          MOV     AX, word ptr [bp+4]   ;get j
+          CALL    PutDec                ;print j
+          sPutCh  ')'               ;print ")"
+          ;return
+          pop     bp       ;restore the previous stack frame
+          ret     4        ;2*2=4 because 2 params were in stack
+PrintAck  ENDP
 
 ;[PutDec]---------------------------------------
 .DATA
