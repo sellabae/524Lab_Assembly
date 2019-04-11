@@ -23,10 +23,10 @@ all under [CECS524Lab](CECS524Lab/) directory
 - Lab12. Subprogram  
 [C2F](CECS524Lab/C2F.md): Celsius to Fahrenheit Program  
 
-- Lab13. Recursive function  
+- Lab13. Recursive Function  
 [SumN](CECS524Lab/SumN.md): Sum 1 to n Program  
 
-- Project: Assembler program  
+- Project. Complex Assembler Program  
 [FunctionSolver](CECS524Lab/FSolver.md): Fibonacci and Ackerman program  
 
 
