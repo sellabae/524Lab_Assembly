@@ -38,13 +38,18 @@ Main    PROC
 Main    ENDP
 
 
-;Menu--------------------------------------------------
-.DATA
+;Menu--------------------------------------------------------------
+;Purpose: Procedure Menu asks one input from user,
+;         calls InputFib or InputAck depend on the input.
+;Parameters: none
+;Input: one number
+;Display:
 ;-----------------------------------------------------
 ; MENU     1. Fibonacci    2. Ackerman    0. Quit
 ;-----------------------------------------------------
+.DATA
 PromptMenu    db  13,10,'-----------------------------------------------------',13,10,' MENU     1. Fibonacci    2. Ackerman    0. Quit',13,10,'-----------------------------------------------------',13,10,'$'
-PromptInput   db  'Select menu: $'
+PromptSelect  db  'Select menu: $'
 .CODE
 Menu    PROC
         ;subprogram prep
@@ -53,7 +58,7 @@ Menu    PROC
 AskInput:
 ;Get menu input
         sPutStr PromptMenu    ;print menu options
-        sPutStr PromptInput   ;print input prompt
+        sPutStr PromptSelect  ;print input prompt
         CALL    GetDec        ;get menu input
         MOV     BX, AX        ;move choice to bx
 ;switch(choice)
@@ -76,7 +81,12 @@ Menu0:  ;Exit
 Menu    ENDP
 
 
-;InputFib----------------------------------------------
+;InputFib--------------------------------------------------------------
+;Purpose: Procedure InputFib asks one input from user,
+;         calls Fib, and prints output
+;Parameters: none
+;Input: one natural number
+;Output: print "Fib(n)=result"
 .DATA
 PromptFib  db  'Fibonacci',13,10,'$'
 PromptN    db  'Enter n: $'
@@ -117,7 +127,12 @@ ContInputFib:
 InputFib  ENDP
 
 
-;InputAck----------------------------------------------
+;InputAck--------------------------------------------------------------
+;Purpose: Procedure InputAck asks two inputs from user,
+;         calls Ack, and prints output
+;Parameters: none
+;Input: two natural numbers
+;Output: print "Ack(x,y)=result"
 .DATA
 PromptAck   db  'Ackerman',13,10,'$'
 PromptX     db  'Enter x: $'
@@ -176,16 +191,22 @@ ContInputAck:
 InputAck  ENDP
 
 
-;Fibonacci---------------------------------------------
-;f(n) = f(n-1) + f(n-2), where f(1)=1, f(2)=1
+
 .CODE
-Fib     PROC
-; ------------------------------------------------------------
+;Fib-------------------------------------------------------------------
+;Purpose: Function Fib calculates Fibonacci number
+;Parameters: one natural number pushed into stack from caller
+;Returns: AX
+;Fibonacci Logic:
+;  f(n) = f(n-1) + f(n-2), where f(1)=1, f(2)=1
+;Code Sketch:
+;-------------------------------------------------------------
 ; int Fib(int n) {
 ;    if( n <= 1 )   return n              //base case
 ;    else   return Fib(n-1) + Fib(n-2)    //recursive
 ; } //let's change this to a better Fib() algorithm later!
-; ------------------------------------------------------------
+;-------------------------------------------------------------
+Fib     PROC
         push    bp            ;save the current bp (stack frame)
         mov     bp, sp        ;create new bp from sp(top)
         MOV     BX, word ptr [bp+4]   ;get param n in stack into bx
@@ -224,13 +245,17 @@ DoneFib:
 Fib     ENDP
 
 
-;Ackerman----------------------------------------------
-;A(0,j) = j+1               for j>=0
-;A(i,0) = A(i-1, 1)         for i>0
-;A(i,j) = A(i-1, A(i,j-1))  for i,j>0
 .CODE
-Ack     PROC
-; ------------------------------------------------------------
+;Ack-------------------------------------------------------------------
+;Purpose: Function Ack calculates Ackermann's function from two inputs
+;Parameters: two natural numbers pushed into stack from caller
+;Returns: AX
+;Ackerman Logic:
+;  A(0,j) = j+1               for i=0,j>0
+;  A(i,0) = A(i-1, 1)         for i>0,j=0
+;  A(i,j) = A(i-1, A(i,j-1))  for i>0,j>0
+;Code Sketch:
+;-------------------------------------------------------------
 ; int Ack(int i, int j) {           //assume i,j>=0
 ;    if (i == 0)
 ;       return j++                  //base case  when i=0
@@ -239,7 +264,8 @@ Ack     PROC
 ;    else
 ;       return Ack(i-1, Ack(i,j-1)) //recursive2 when i>0,j>0
 ; }
-; ------------------------------------------------------------
+;-------------------------------------------------------------
+Ack     PROC
         push    bp            ;save the current bp (stack frame)
         mov     bp, sp        ;create new bp from sp(top)
         MOV     BX, word ptr [bp+6]   ;get param x in stack into bx
@@ -292,13 +318,15 @@ DoneAck:
 
 Ack     ENDP
 
-
-;PrintAck-----------------------------------------
-;; ;use this subprogram for debugging Ackerman
+.CODE
+;PrintAck----------------------------------------------------------
+;Purpose: Procedure PrintAck prints "A(i,j)" for debugging Ackerman
+;Parameters: two natural numbers pushed into stack from caller
+;Returns: none
+;Use:
 ;; PUSH    BX            ;arg i
 ;; PUSH    CX            ;arg j
 ;; CALL    PrintAck      ;print "A(i,j)"
-.CODE
 PrintAck  PROC
           push    bp        ;save the current bp (stack frame)
           mov     bp, sp    ;create new bp from sp(top)
