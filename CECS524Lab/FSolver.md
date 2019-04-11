@@ -1,8 +1,7 @@
 ### CECS524. Spring break project
 # Function Solver: Fibonacci and Ackerman
-
-#### Assembly code
-[FSolver.asm](../FSolver.asm)  
+- assembly code: [FSolver.asm](../FSolver.asm)
+- executable: [fsolver.exe](../fsolver.exe)
 
 #### Screenshot
 ![fsolver screenshot1](images/fsolver_screenshot1.png)
