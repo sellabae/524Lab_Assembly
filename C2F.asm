@@ -18,7 +18,7 @@ include Pcmac.inc
 ProgTitle   db  '[Celsius To Farenheit]',13,10,'$'
 PromptCel   db  'Enter celsius temperature: $'
 MsgCel      db  ' Celsius is $'
-MsgFah      db  ' Fahrenheit.$'
+MsgFah      db  ' Fahrenheit.',13,10,'$'
 
 .CODE
 Main  PROC
@@ -27,30 +27,36 @@ Main  PROC
 ;print program title
       sPutStr ProgTitle
 
-EnterCel:
+Start:
 ;Get input cel
       sPutStr PromptCel   ;print "Enter..."
       CALL    GetDec      ;get input cel
       MOV     BX, AX      ;move input to bx
-
-;Check if input cel is greater than 0
-      CMP     BX, 0       ;if (c >= 0)
-                          ;compared result in ax
-      JL      EnterCel    ;no, then ask input again
+      ; ;Check if input cel is greater than 0
+      ; CMP     BX, 0       ;if (c >= 0)
+      ;                     ;compared result in ax
+      ; JL      Start    ;no, then ask input again
       PUSH    BX          ;store cel in stack frame for main()
+
 ;Call C2F(cel) subprogram
       PUSH    BX          ;argument cel to C2F
       CALL    C2F         ;call subprogram C2F(cel)
       MOV     CX, AX      ;move return value from C2F() to cx
+      POP     BX          ;get local variable cel back from stack
 
 ;Print the result
-      POP     AX          ;get local variable cel back from stack
+      MOV     AX, BX      ;move cel to ax
       CALL    PutDec      ;print celsius
       sPutStr MsgCel      ;print " Celsius is "
       MOV     AX, CX      ;move fahrenheit to ax
       CALL    PutDec      ;print fahrenheit
       sPutStr MsgFah      ;print " Fahrenheit."
       sPutCh  13, 10      ;print newline
+
+;repeat until input is 0
+      CMP     BX, 0       ;if(input!=0)
+      JNE     Start       ;input!=0, repeat the program
+      ;                   ;input==0, exit
 
       _exit               ;exit program
 
