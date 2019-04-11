@@ -1,19 +1,17 @@
-### CECS524. Lab13
+### CECS524. Lab13. Recursive Assembler Function
 # Sum 1 to n Program
-IBM PC Assembly language program that adds a sequence of integers from 1 to an input value
+IBM PC Assembly language program that adds a sequence of integers from 1 to an input value by recursive calls
 
 Assignment: [Lab13](#Assignment)  
 
-Assembly code: [lab13.asm](../lab13.asm)  
+Assembly code: [SumN.asm](../SumN.asm)  
 
 Screenshots  
-...
+![SumN_screenshot](images/sumn_screenshot.png)
 
 ## Assignment
-
-CECS 524  Lab 13		Recursive Assembler Function
-
-Write an IBMPC assembly language version of the program below:
+CECS524. Lab13. Recursive Assembler Function  
+Write an IBM PC assembly language version of the java program below:
 ```
 package cecs524lab13;
 import java.util.Scanner;

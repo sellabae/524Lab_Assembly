@@ -34,10 +34,11 @@ Main    PROC
         CALL    GetDec        ;get int n
         ;call RecAdd(n)
         PUSH    AX            ;pass argument
-        CALL    RecAdd        ;call RecAdd(ax)
+        CALL    RecAdd        ;call RecAdd. result in ax.
         ;print result
         sPutStr SumMsg        ;print "Sum is "
-        CALL    PutDec        ;print the result of RecAdd stored in AX
+        CALL    PutDec        ;print the result of RecAdd(n)
+        sPutCh  13,10         ;print newline
 
         _exit                 ;exit program
 Main    ENDP

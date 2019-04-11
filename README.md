@@ -17,7 +17,7 @@ all under [CECS524Lab](CECS524Lab/) directory
 1. [Lab9](CECS524Lab/readme.md). Creating an Assembly Language Program
 2. [Lab11](CECS524Lab/lab11.md). Payment Calculation Program
 3. [Lab12](). Celsius to Fahrenheit Program
-4. [Lab13](CECS524Lab/lab13.md). Sum 1 to n Program
+4. [SumOfN](CECS524Lab/SumN.md). Sum 1 to n Program
 5. [FunctionSolver](CECS524Lab/FSolver.md). Fibonacci and Ackerman program
 
 ### ...
