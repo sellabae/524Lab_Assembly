@@ -1,14 +1,14 @@
 ### CECS524. Spring break project
 # Function Solver: Fibonacci and Ackerman
 
-Assignment: [Function Solver](#Assignment)  
-Assembly code: [FSolver.asm](../FSolver.asm)  
+#### Assembly code
+[FSolver.asm](../FSolver.asm)  
 
-Screenshots  
+#### Screenshot
 ![fsolver screenshot1](images/fsolver_screenshot1.png)
 ![fsolver screenshot2](images/fsolver_screenshot2.png)
 
-## Program sketch of FSolver.asm
+#### Program sketch of FSolver.asm
 ```
 int Fib(int n);
 int Ack(int x, int y);
@@ -20,7 +20,7 @@ void main();     //call Menu()
 
 ## Assignment
 
-**CECS 524  Function Solver**  
+#### CECS524 Function Solver
 Write an IBMPC assembly language program to do the following:
 - Solve the [Fibonacci](http://www.nist.gov/dads/HTML/fibonacciNumber.html) number series.
 - Solve [Ackerman](http://www.nist.gov/dads/HTML/ackermann.html)'s function.
