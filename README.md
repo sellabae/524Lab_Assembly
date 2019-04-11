@@ -14,16 +14,21 @@ labs for assembly code
 all under [CECS524Lab](CECS524Lab/) directory  
 [How To Assembly/Build/Run Assembly Code on MacOS using TASM](CECS524Lab/readme.md)
 
-#### [Start](CECS524Lab/readme.md)  
-Lab9: Creating an Assembly Language Program
-#### [PayCal](CECS524Lab/lab11.md): Payment Calculation Program  
-Lab11: Assembler Math
-#### [C2F](CECS524Lab/C2F.md): Celsius to Fahrenheit Program  
-Lab12: Subprogram
-#### [SumN](CECS524Lab/SumN.md): Sum 1 to n Program  
-Lab13: Recursive function
-#### [FunctionSolver](CECS524Lab/FSolver.md): Fibonacci and Ackerman program  
-Project: Assembler program
+- Lab9. Creating an Assembly Language Program  
+[Hello](CECS524Lab/readme.md): first program  
 
-### reference
+- Lab11. Assembler Math  
+[PayCalc](CECS524Lab/PayCalc.md): Payment Calculation Program  
+
+- Lab12. Subprogram  
+[C2F](CECS524Lab/C2F.md): Celsius to Fahrenheit Program  
+
+- Lab13. Recursive function  
+[SumN](CECS524Lab/SumN.md): Sum 1 to n Program  
+
+- Project: Assembler program  
+[FunctionSolver](CECS524Lab/FSolver.md): Fibonacci and Ackerman program  
+
+
+#### reference
 * Coding Style: [ASM-Assembly-Coding-Standard-Assembly-7](http://www.sourceformat.com/standard/asm-coding-standard-assembly-7.htm)
