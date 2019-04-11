@@ -1,18 +1,15 @@
-### CECS524. Lab11
+### CECS524. Lab11 Assembler Math
 # Pay Calculator
 IBM PC Assembly language program that calculates wages
+- assembly code: [PayCalc.asm](../PayCalc.asm)  
+- executable: paycalc.exe
 
-Assignment: [Lab11](#Assignment)  
-
-Assembly code: [PayCalc.asm](../PayCalc.asm)  
-
-Screenshots  
-![command line](images/lab11_screenshot1.png)  
-![program executed](images/lab11_screenshot2.png)  
+#### Screenshots  
+![command line](images/paycalc_screenshot1.png)  
+![program executed](images/paycalc_screenshot2.png)  
 
 ## Assignment
 Lab 11	CECS 524	Spring 2019		Assembler Math  
-DUE: end of lab
 
 #### Objectives:  
 * use of include files
