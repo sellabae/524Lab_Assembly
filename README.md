@@ -17,7 +17,7 @@ all under [CECS524Lab](CECS524Lab/) directory
 #### [Start](CECS524Lab/readme.md)  
 Lab9: Creating an Assembly Language Program
 #### [PayCal](CECS524Lab/lab11.md): Payment Calculation Program  
-Lab11: Arithmentic calculation
+Lab11: Assembler Math
 #### [C2F](CECS524Lab/C2F.md): Celsius to Fahrenheit Program  
 Lab12: Subprogram
 #### [SumN](CECS524Lab/SumN.md): Sum 1 to n Program  
