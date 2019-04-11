@@ -1,10 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; "Sum 1 to n Program"
-; CECS 524 Spring2019 - Lab13
+; CECS 524 Spring2019 - Lab13. Recursive function
 ;
 ; This program reads one integer value from user,
 ; adds a sequence of integers from 1 to the input value,
 ; and prints the result to the display.
+;
+; This calculates the problem recursively
+; to practice recursion in assembly code
 ;
 ; Sella Bae
 ; 3/29/2019
@@ -43,16 +46,14 @@ Main    ENDP
 ;RecAdd calculates sum of 1..n by recursive calls
 .CODE
 RecAdd  PROC
-;------------------------------
-; if(n==1)
-;      return 1;
-; else
-;      return n + recadd(n-1);
-;------------------------------
+;----------------------------------
+; if(n==1)   return 1;
+; else   return n + recadd(n-1);
+;----------------------------------
         push  bp       ;save the current bp (stack frame)
         mov   bp, sp   ;create new bp from sp(top)
         ;get parameter stored in stack 4 bytes up from bp
-        MOV   AX, word ptr [bp+4] ;get param
+        MOV   AX, word ptr [bp+4] ;get param n from stack to ax
         ;IF
         CMP   AX, 1               ;if (n <= 1)
         ;THEN
